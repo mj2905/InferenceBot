@@ -5,20 +5,15 @@ user = 'testbot'
 passw = 'dhbot2017'
 baseurl = 'http://wikipast.epfl.ch/wikipast/'
 summary = 'Wikipastbot update'
-names = ['bacasable']
+listPage = 'InferenceBot - Listes des pages de test'
 
 
 def run():
     establish_connexion()
 
-    for name in names:
-        result = requests.post(baseurl + 'api.php?action=query&titles=' + name + '&export&exportnowrap')
-        soup = BeautifulSoup(result.text, "lxml")
-        # soup=BeautifulSoup(result.text)
-        code = ''
-        for primitive in soup.findAll("text"):
-            code += primitive.string
-        print(code)
+    result = requests.post(baseurl + 'api.php?action=query&titles=' + listPage + '&export&exportnowrap')
+    soup = BeautifulSoup(result.text, "lxml")
+    print(soup)
 
 
 def establish_connexion():
