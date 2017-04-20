@@ -43,6 +43,9 @@ class Unificator:
         if len(prop1) != len(prop2):
             return Unificator.failure
 
+        if isinstance(prop1, Predicate) and isinstance(prop2, Predicate) and prop1.name != prop2.name:
+            return Unificator.failure
+
         if len(prop1) == 0 and len(prop2) == 0:
             return {}
         if len(prop1) == 0 or len(prop2) == 0:
