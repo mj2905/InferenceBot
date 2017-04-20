@@ -3,8 +3,8 @@ import urllib.request as urllib
 
 from bs4 import BeautifulSoup
 
-from Datastructs import *
-from wiki import WikiStrings
+from DataStructures.Datastructs import *
+from Wiki import WikiStrings
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
