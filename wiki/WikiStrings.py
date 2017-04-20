@@ -1,3 +1,15 @@
+"""
+This file defines a keyword for each type of event that can be scrapped on Wikipast's pages. To each keyword
+corresponds a list of irrelevant words for the scrapper that should be discared when parsing the corresponding line.
+
+Example:
+    
+    1234.56.78 / LocationCity. Rencontre de A avec B.
+    
+    The relevant pieces of information are the date, A and B. Therefore, for the encounter keyword we discard
+    "Rencontre", "de" and "avec"
+"""
+
 BIRTH = "Naissance de "
 BIRTH_TODISCARD = ["Naissance", "de"]
 ENCOUNTER = "Rencontre"
