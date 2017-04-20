@@ -70,6 +70,9 @@ class Location(Atomiseable):
     def __eq__(self, other):
         return self.__key() == other.__key()
 
+    def __hash__(self):
+        return hash(self.__key())
+
     def toAtom(self):
         return Atom(self.name, False)
 
@@ -187,31 +190,7 @@ class Encounter(Event):
 
 
 def main():
-    p1 = Person("Foo1", "Bar1")
-    p2 = Person("Foo2", "Bar2")
-
-    print(hash(p1))
-    print(hash(p2))
-
-    b = Birth(Date(1980), p1)
-    e1 = Encounter(Date(1980), p1, p2)
-    e2 = Encounter(Date(1980), p1, p2)
-
-    print(hash(e1))
-    print(hash(e2))
-
-    print(b.toPredicate())
-    print(Date.extractDate("2017.02.02"))
-    print(Date.extractDate("2017.02.02 - 01:01:01"))
-
-    d1 = Date(2017, 2, 2, 1, 1, 1)
-    d2 = Date(2017, 2, 2, 1, 1, 1)
-
-    print(d1 == d2)
-
-    print(hash(d1))
-    print(hash(d2))
-
+    pass
 
 if __name__ == '__main__':
     main()
