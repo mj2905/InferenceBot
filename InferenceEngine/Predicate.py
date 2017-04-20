@@ -135,7 +135,7 @@ class Predicate(Proposition):
         if other == None:
             return False
 
-        return self.propositions == other.propositions
+        return self.propositions == other.propositions and self.name == other.name
 
     def __hash__(self):
         return hash(frozenset(self.propositions))
