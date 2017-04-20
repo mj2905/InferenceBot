@@ -31,12 +31,12 @@ or a Predicate for the inference engine. Refer to the documentation in the sourc
 ## Test pages
 
 ### Title
-In order to test the behavior of the bot, all test pages must have a name starting with "InferenceBot test page - "
+In order to test the behavior of the bot, all test pages must have a name starting with "InferenceBot page test - "
 followed by the name of the page. For example, a test page for an individual named John Doe would have the following
 title:
 
 ```
-InferenceBot test page - John Doe
+InferenceBot page test - John Doe
 ```
 
 ### Format
