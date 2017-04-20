@@ -30,7 +30,7 @@ class Proposition(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def __repr__(self):
+    def __str__(self):
         pass
 
     @abstractmethod
@@ -61,15 +61,18 @@ class Atom(Proposition):
     def __hash__(self):
         return hash(self.name)
 
-    def __repr__(self):
+    def __str__(self):
         return self.name
+
+    def __repr__(self):
+        return str(self)
 
     def __contains__(self, item):
         return self == item
 
 
 class Predicate(Proposition):
-    def __init__(self, propositions, name):
+    def __init__(self, propositions, name = ''):
         self.propositions = propositions
         self.name = name
 
@@ -129,16 +132,22 @@ class Predicate(Proposition):
         return len(self.propositions)
 
     def __eq__(self, other):
+        if other == None:
+            return False
+
         return self.propositions == other.propositions
 
     def __hash__(self):
         return hash(frozenset(self.propositions))
 
-    def __repr__(self):
+    def __str__(self):
         res = self.name + '('
         for p in self.propositions:
             res = res + p.name + ','
         return res[:len(res) - 1] + ')'
+
+    def __repr__(self):
+        return str(self)
 
     def __contains__(self, item):
         return set(item.propositions) < set(self.propositions)
