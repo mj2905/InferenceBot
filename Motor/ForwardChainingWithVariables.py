@@ -1,5 +1,5 @@
-from Unificator import Unificator
-from Chaining import Chaining
+from Motor.Chaining import Chaining
+from Motor.Unificator import Unificator
 
 
 class ForwardChainingWithVariables(Chaining):

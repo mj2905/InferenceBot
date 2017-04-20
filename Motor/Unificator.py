@@ -1,4 +1,4 @@
-from Predicate import Predicate
+from Motor.Predicate import Predicate
 
 class Unificator:
     """ Classe implémentant les méthodes de l'unification de propositions avec\
