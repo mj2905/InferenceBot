@@ -72,7 +72,7 @@ class Atom(Proposition):
 
 
 class Predicate(Proposition):
-    def __init__(self, propositions, name = ''):
+    def __init__(self, propositions, name=''):
         self.propositions = propositions
         self.name = name
 

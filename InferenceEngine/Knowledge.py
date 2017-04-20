@@ -30,9 +30,9 @@ class KnowledgeBase:
 
             :param list faits: une liste de faits.
         """
-        
+
         self.facts.extend(faits)
-            
+
     def addRule(self, description):
         """ Ajoute une règle dans la base de connaissances étant donné sa\
             description.

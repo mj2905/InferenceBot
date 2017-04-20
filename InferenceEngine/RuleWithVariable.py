@@ -66,10 +66,9 @@ class RuleWithVariable:
         # qui permettent de satisfaire une des conditions.
         for cond1 in conditions_a_tester:
             envs_nouveaux = []
-
-            for facts in facts:
+            for fact in facts:
                 for env1 in envs:
-                    env1 = method.pattern_match(facts, cond1, env1)
+                    env1 = method.pattern_match(fact, cond1, env1)
                     if env1 != method.failure:
                         envs_nouveaux.append(env1)
 

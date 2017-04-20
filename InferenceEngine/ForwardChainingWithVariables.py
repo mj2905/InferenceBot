@@ -1,5 +1,5 @@
-from Motor.Chaining import Chaining
-from Motor.Unificator import Unificator
+from InferenceEngine.Chaining import Chaining
+from InferenceEngine.Unificator import Unificator
 
 
 class ForwardChainingWithVariables(Chaining):
@@ -28,7 +28,7 @@ class ForwardChainingWithVariables(Chaining):
             instanciations de la conclusion.
         """
         return [self.method.substitute(regle.conclusion, env) for env in envs]
-    
+
     def chain(self):
         """ Effectue le chaînage avant sur les faits et les règles contenus\
             dans la base de connaissances.

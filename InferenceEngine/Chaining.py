@@ -1,4 +1,3 @@
-
 class Chaining:
     """ Le squelette d'un moteur d'inférence.
 

@@ -1,4 +1,5 @@
-from Motor.Predicate import Predicate
+from InferenceEngine.Predicate import Predicate
+
 
 class Unificator:
     """ Classe implémentant les méthodes de l'unification de propositions avec\
@@ -22,7 +23,7 @@ class Unificator:
             else:
                 return pattern
 
-        pattern_subst = Predicate([],pattern.name)
+        pattern_subst = Predicate([], pattern.name)
 
         for sub_pattern in pattern.propositions:
             sub_pattern_subst = self.substitute(sub_pattern, env)
@@ -42,8 +43,6 @@ class Unificator:
         if len(prop1) != len(prop2):
             return Unificator.failure
 
-        if type(prop1) == Predicate and type(prop2) == Predicate and prop1.name != prop2.name:
-            return Unificator.failure
         if len(prop1) == 0 and len(prop2) == 0:
             return {}
         if len(prop1) == 0 or len(prop2) == 0:

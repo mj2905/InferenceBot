@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from Motor.Predicate import Atom, Predicate
+from InferenceEngine.Predicate import Atom, Predicate
 
 
 class Atomiseable(metaclass=ABCMeta):
