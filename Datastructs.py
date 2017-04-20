@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from Predicate import Atom, Predicate
+from Motor.Predicate import Atom, Predicate
 
 
 class Atomiseable(metaclass=ABCMeta):

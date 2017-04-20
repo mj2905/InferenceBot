@@ -1,8 +1,8 @@
-from ForwardChainingWithVariables import ForwardChainingWithVariables
-from Knowledge import KnowledgeBase
-from Predicate import Atom, Predicate
-from RuleWithVariable import RuleWithVariable
-from Unificator import Unificator
+from Motor.ForwardChainingWithVariables import ForwardChainingWithVariables
+from Motor.Knowledge import KnowledgeBase
+from Motor.Predicate import Atom, Predicate
+from Motor.RuleWithVariable import RuleWithVariable
+from Motor.Unificator import Unificator
 
 x = Atom('x',True)
 y = Atom('y',True)
