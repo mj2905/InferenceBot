@@ -22,7 +22,23 @@ Classes that can be converted into a Predicate
 Each class in this module provides either a method to convert the object into an Atom 
 or a Predicate for the inference engine. Refer to the documentation in the source code for further details.
 
-## Wiki scraping
+## Wiki scrapping
+### Scrapping engine
+
+### Scrapper classes
+The scrapper classes look for so called "concepts". Concepts are features appearing in pages that are of certain 
+relevance for the Bot. For example, an encounter between two individuals is a concept.
+The actual scrapping work is done in scrapper classes. Each of those classes specialize in scrapping a given concept
+and they must define the following functions:
+
+* `keyword`: returns the keyword used to identify useful concepts  
+* `find`: returns a list of tags in which the concept was identified
+* `extract`: return an object corresponding to the concept 
+
+To add scrapper classes, simply make them inherit from the abstract Scrapper class in WikiScrapper.py file and
+implement the function listed above.
+ 
+Refer to the documentation in the source code for further details.
 
 ## Wiki editing
 
