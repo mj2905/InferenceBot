@@ -37,7 +37,7 @@ class ScrapingEngine(object):
         for (births, deaths, encounters) in results:
             self.objectsDB = self.objectsDB.union(births.union(deaths).union(encounters))
 
-    def run(self, batchSize=20):
+    def run(self, batchSize=3):
         start = time.time()
         response = urllib.urlopen(self.baseUrl + self.listPage)
 
@@ -60,11 +60,11 @@ class ScrapingEngine(object):
 
         end = time.time()
 
-        logging.info("Processing time was %f second(s), got:", end - start)
         for e in self.objectsDB:
             if e is None:
                 continue
             logging.info("%s", str(e))
+        logging.info("Processing time was %f second(s).", end - start)
 
 
 if __name__ == '__main__':

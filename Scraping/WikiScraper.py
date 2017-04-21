@@ -1,4 +1,5 @@
 import logging
+import threading
 import urllib.request as urllib
 
 from bs4 import BeautifulSoup
@@ -235,23 +236,38 @@ class EncounterScraper(Scraper):
         return None if tmp is None else Encounter(*tmp)
 
 
+def processUrl(url, responses, i):
+    tmp = None
+    try:
+        tmp = urllib.urlopen(url)
+    except:
+        logging.error("The following url threw an error: %s", url)
+        return
+
+    if tmp.getcode() != 200:
+        logging.error("The following url could not be reached: %s", url)
+
+    responses[i] = tmp
+
+
 def run(urlList):
     resList = list()
-    responseList = list()
-    for url in urlList:
-        try:
-            response = urllib.urlopen(url)
-        except:
-            logging.error("The following url threw an error: %s", url)
+    responses = [None] * len(urlList)
+    processes = []
+
+    for i in range(len(urlList)):
+        process = threading.Thread(target=processUrl, args=[urlList[i], responses, i])
+        process.setDaemon(True)
+        process.start()
+        processes.append(process)
+
+    for process in processes:
+        process.join()
+
+    for response in responses:
+        if response is None:
             continue
 
-        if response.getcode() != 200:
-            logging.error("The following url could not be reached: %s", url)
-            continue
-
-        responseList.append(response)
-
-    for response in responseList:
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
         births = scrap_generic(soup, BirthScraper)
@@ -261,6 +277,7 @@ def run(urlList):
         resList.append([births, deaths, encounters])
 
     return resList
+
 
 if __name__ == '__main__':
     run()

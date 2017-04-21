@@ -24,6 +24,15 @@ or a Predicate for the inference engine. Refer to the documentation in the sourc
 
 ## Wiki scraping
 ### Scraping engine
+The engine first vists the Wiki page which keeps track of all the pages to collect as much urls as possible.
+Then it groups urls by batches and open simultaneous connexions through parallel thread to retrieve the corresponding 
+content from the internet. Once the threads joined the processing is done sequentially on the data to scrap for 
+events. Data parsing is done sequentially because the retrieval of content from the internet dominates the total
+time needed by a very large margin.
+
+Once the batch has been processed, it is returned as a list containing an array of sets. Each array correspond to the 
+result of the scraping process on a given page and each set corresponds to the set of concepts that have successfully 
+been extracted from the page.
 
 ### Scraper classes
 The scraper classes look for so called "concepts". Concepts are features appearing in pages that are of certain 
