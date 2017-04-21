@@ -5,13 +5,8 @@ from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
 from Scraping import WikiStrings
-from Scraping.WikiStrings import translationTable
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
-
-
-# Specify characters that could potentially make an entry unreadable and that should therefore be removed
-
 
 def scrap_generic(data, scraper):
     """
@@ -139,6 +134,42 @@ class BirthScraper(Scraper):
         l = Location(location)
 
         return Birth(d, l, p1)
+
+
+class DeathScrapper(Scraper):
+    @staticmethod
+    def keyword():
+        return WikiStrings.DEATH
+
+    @staticmethod
+    def find(data):
+        return data.findAll(string=WikiStrings.DEATH)
+
+    @staticmethod
+    def extract(s):
+        """
+        The usual birth format is the following:
+
+        1234.56.78 / Location. Naissance de X.
+
+        The line is first split at '/' to retrieve the date, then at the first dot to retrieve the location and
+        finally splits the remaining string at each space. The resulting list is filtered according to the list of
+        words to discard as given in the WikiStrings file and the Birth object is created with the remaining data.
+        This data is assumed to be the first and last name of an individual, nothing more, nothing less. If the
+        remaining data does not math the format expected it is discarded and the entry is logged.
+
+        :param **kwargs:
+        :param s: The string entry from which to extract a birth
+        :return: An Birth object if it was possible to extract one, None otherwise.
+        """
+        # Remove trailing dot
+
+        temp = extractHelper(s, WikiStrings.DEATH_TODISCARD, "death")
+        if temp is None:
+            return None
+        else:
+            (d, l, p1) = temp
+        return Death(d, l, p1)
 
 
 class EncounterScraper(Scraper):
