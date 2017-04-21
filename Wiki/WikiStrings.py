@@ -10,7 +10,7 @@ Example:
     "Rencontre", "de" and "avec"
 """
 
-BIRTH = "Naissance de "
+BIRTH = "Naissance"
 BIRTH_TODISCARD = ["Naissance", "de"]
 ENCOUNTER = "Rencontre"
 ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec"]

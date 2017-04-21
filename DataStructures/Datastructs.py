@@ -147,15 +147,16 @@ class Event(Predicateable):
 
 
 class Birth(Event):
-    def __init__(self, date, person):
+    def __init__(self, date, location, person):
         super().__init__(date)
+        self.location = location
         self.person = person
 
     def __key(self):
-        return (self.date, self.person)
+        return (self.date, self.location, self.person)
 
     def __str__(self):
-        return str(self.date) + " / Naissance de " + str(self.person)
+        return str(self.date) + " / " + str(self.location) + ". Naissance de " + str(self.person) + "."
 
     def __hash__(self):
         return hash(self.__key())
@@ -164,7 +165,7 @@ class Birth(Event):
         return self.__key() == other.__key()
 
     def toPredicate(self):
-        return Predicate([self.person.toAtom(), self.date.toAtom()], "birth")
+        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], "birth")
 
 
 class Encounter(Event):
@@ -177,7 +178,7 @@ class Encounter(Event):
         return (self.date, self.person1, self.person2)
 
     def __str__(self):
-        return str(self.date) + " - Rencontre de " + str(self.person1) + " et " + str(self.person2)
+        return str(self.date) + " - Rencontre de " + str(self.person1) + " et " + str(self.person2) + "."
 
     def __hash__(self):
         return hash(self.__key())

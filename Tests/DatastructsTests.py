@@ -45,11 +45,13 @@ class TestBirth(unittest.TestCase):
         self.p2 = Person("Foo2", "Bar2")
         self.p3 = Person("Foo1", "Bar1")
         self.p4 = Person("Foo2", "Bar2")
+        self.l1 = Location("Foo1")
+        self.l2 = Location("Foo2")
 
-        self.b1 = Birth(self.d1, self.p1)
-        self.b2 = Birth(self.d2, self.p2)
-        self.b3 = Birth(self.d3, self.p3)
-        self.b4 = Birth(self.d4, self.p4)
+        self.b1 = Birth(self.d1, self.p1, self.l1)
+        self.b2 = Birth(self.d2, self.p2, self.l2)
+        self.b3 = Birth(self.d3, self.p3, self.l1)
+        self.b4 = Birth(self.d4, self.p4, self.l2)
 
     def test_hash(self):
         self.assertEqual(hash(self.b1), hash(self.b3))
