@@ -31,9 +31,9 @@ class ScrapingEngine(object):
         self.linksDB = [x for x in self.linksDB if x not in ["#", None]]
 
     def processUrlBatch(self, batch):
-        # logging.info("Attempting to scrape: %s", batch)
+        logging.info("Attempting to scrape: %s", batch)
         results = Scraping.WikiScraper.run(batch)
-        # logging.info("%s was scraped resulting in %s", batch, results)
+        logging.info("%s was scraped resulting in %s", batch, results)
 
     def run(self, batchSize=10):
         start = time.time()
