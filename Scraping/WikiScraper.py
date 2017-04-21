@@ -4,13 +4,9 @@ import urllib.request as urllib
 from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
-from ScrapingEngine import WikiStrings
+from Scraping import WikiStrings
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
-
-baseUrl = 'http://wikipast.epfl.ch/wikipast/index.php/'
-listPage = 'InferenceBot_page_test_-_Secundinus_Aurelianus'
-
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 def scrap_generic(data, scraper):
     """
@@ -76,6 +72,10 @@ class BirthScraper(Scraper):
     """
     A Scraper object specialized in scraping births of individuals
     """
+    BAD_FORMAT = ''.join(
+        ["The scraper discarded a candidate birth because it ",
+         "did not have the correct format. ",
+         "The discarded entry is %s"])
 
     @staticmethod
     def keyword():
@@ -105,17 +105,28 @@ class BirthScraper(Scraper):
         if s.endswith("."):
             s = s[:-1]
 
-        (date, locAndBirth) = s.split("/")
-        (location, person) = locAndBirth.split(".", 1)  # Specify at most 1 split to retrieve location
+        dateRes = s.split("/")
+
+        if (len(dateRes) != 2):
+            logging.warning(BirthScraper.BAD_FORMAT, s)
+            return None
+
+        date, locAndBirth = dateRes[0], dateRes[1]
+
+        locRes = locAndBirth.split(".", 1)  # Specify at most 1 split to retrieve location
+
+        if (len(locRes) != 2):
+            logging.warning(BirthScraper.BAD_FORMAT, s)
+            return None
+
+        location, person = locRes[0], locRes[1]
 
         # Extract only people's names
         person = person.strip().split(" ")
         person = [x for x in person if x not in WikiStrings.BIRTH_TODISCARD]
 
         if (len(person) != 2):
-            logging.warning("The scraper discarded a candidate birth because it " +
-                            "did not have the correct number of names in it. " +
-                            "The discarded entry is %s", s)
+            logging.warning(BirthScraper.BAD_FORMAT, s)
             return None
 
         p1 = Person(person[0], person[1])
@@ -129,6 +140,10 @@ class EncounterScraper(Scraper):
     """
     A Scraper object specialized in scraping encounter between two individuals
     """
+    BAD_FORMAT = ''.join(
+        ["The scraper discarded a candidate encounter because it ",
+         "did not have the correct format. ",
+         "The discarded entry is %s"])
 
     @staticmethod
     def keyword():
@@ -158,17 +173,28 @@ class EncounterScraper(Scraper):
         if (s.endswith(".")):
             s = s[:-1]
 
-        (date, locAndPeople) = s.split("/")
-        (location, people) = locAndPeople.split(".", 1)  # Specify at most 1 split to retrieve location
+        dateRes = s.split("/")
+
+        if (len(dateRes) != 2):
+            logging.warning(EncounterScraper.BAD_FORMAT, s)
+            return None
+
+        date, locAndPeople = dateRes[0], dateRes[1]
+
+        locRes = locAndPeople.split(".", 1)  # Specify at most 1 split to retrieve location
+
+        if (len(locRes) != 2):
+            logging.warning(EncounterScraper.BAD_FORMAT, s)
+            return None
+
+        location, people = locRes[0], locRes[1]
 
         # Extract only people's names
         people = people.strip().split(" ")
         people = [x for x in people if x not in WikiStrings.ENCOUNTER_TODISCARD]
 
         if (len(people) != 4):
-            logging.warning("The scraper discarded a candidate encounter because it " +
-                            "did not have the correct number of names in it. " +
-                            "The discarded entry is %s", s)
+            logging.warning(EncounterScraper.BAD_FORMAT, s)
             return None
 
         p1 = Person(people[0], people[1])
@@ -177,12 +203,31 @@ class EncounterScraper(Scraper):
         return Encounter(d, p1, p2)
 
 
-def run():
-    response = urllib.urlopen(baseUrl + listPage)
-    pageSource = response.read()
-    soup = BeautifulSoup(pageSource, 'lxml')
-    scrap_generic(soup, BirthScraper)
-    scrap_generic(soup, EncounterScraper)
+def run(urlList):
+    resList = list()
+    dataList = list()
+    responseList = list()
+    for url in urlList:
+        try:
+            response = urllib.urlopen(url)
+        except:
+            logging.error("The following url threw an error: %s", url)
+            return [None, None]
+
+        if response.getcode() != 200:
+            logging.error("The following url could not be reached: %s", url)
+            return [None, None]
+
+        responseList.append(response)
+
+    for response in responseList:
+        pageSource = response.read()
+        soup = BeautifulSoup(pageSource, 'lxml')
+        births = scrap_generic(soup, BirthScraper)
+        encounters = scrap_generic(soup, EncounterScraper)
+        resList.append([births, encounters])
+
+    return resList
 
 if __name__ == '__main__':
     run()
