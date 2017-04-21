@@ -34,9 +34,8 @@ class ScrapingEngine(object):
         logging.info("Attempting to scrape: %s", batch)
         results = Scraping.WikiScraper.run(batch)
 
-        for (births, encounters) in results:
-            self.objectsDB = self.objectsDB.union(births)
-            self.objectsDB = self.objectsDB.union(encounters)
+        for (births, deaths, encounters) in results:
+            self.objectsDB = self.objectsDB.union(births.union(deaths).union(encounters))
 
     def run(self, batchSize=20):
         start = time.time()

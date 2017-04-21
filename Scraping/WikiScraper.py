@@ -255,8 +255,10 @@ def run(urlList):
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
         births = scrap_generic(soup, BirthScraper)
+        deaths = scrap_generic(soup, DeathScraper)
         encounters = scrap_generic(soup, EncounterScraper)
-        resList.append([births, encounters])
+
+        resList.append([births, deaths, encounters])
 
     return resList
 
