@@ -70,11 +70,13 @@ class TestEncounter(unittest.TestCase):
         self.p2 = Person("Foo2", "Bar2")
         self.p3 = Person("Foo1", "Bar1")
         self.p4 = Person("Foo2", "Bar2")
+        self.l1 = Location("Foo1")
+        self.l2 = Location("Foo2")
 
-        self.e1 = Encounter(self.d1, self.p1, self.p2)
-        self.e2 = Encounter(self.d2, self.p1, self.p2)
-        self.e3 = Encounter(self.d1, self.p3, self.p4)
-        self.e4 = Encounter(self.d2, self.p1, self.p2)
+        self.e1 = Encounter(self.d1, self.l1, self.p1, self.p2)
+        self.e2 = Encounter(self.d2, self.l2, self.p1, self.p2)
+        self.e3 = Encounter(self.d1, self.l1, self.p3, self.p4)
+        self.e4 = Encounter(self.d2, self.l2, self.p1, self.p2)
 
     def test_hash(self):
         self.assertEqual(hash(self.e1), hash(self.e3))

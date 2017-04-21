@@ -10,7 +10,7 @@ Example:
     "Rencontre", "de" and "avec"
 """
 dateTranslationTable = {ord(c): None for c in '-'}
-translationTable = {ord(c): None for c in '0123456789|[](){}.:;/*%&?!^='}
+translationTable = {ord(c): None for c in '0123456789|[](){}.,:;/*%&?!^='}
 
 BIRTH = "Naissance"
 DEATH = "Mort"
