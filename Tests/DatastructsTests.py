@@ -108,7 +108,10 @@ class TestDate(unittest.TestCase):
 
     def test_extractDate(self):
         self.assertEqual(Date.extractDate("01.02.03 - 04:05:06"), self.d1)
+        self.assertEqual(Date.extractDate("01.02.03 - 04"), Date(1, 2, 3, 4))
         self.assertEqual(Date.extractDate("01.02.03"), Date(1, 2, 3))
+        self.assertEqual(Date.extractDate("01.02"), Date(1, 2))
+        self.assertEqual(Date.extractDate("01"), Date(1))
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+import re
 from abc import ABCMeta, abstractmethod
 
 from InferenceEngine.Predicate import Atom, Predicate
@@ -107,20 +108,19 @@ class Date(Atomiseable):
 
     @staticmethod
     def extractDate(str):
-        s = str.strip()
-        l = s.split("-")
-        datelen = len(l)
+        vals = list()
+        s = str
 
-        if datelen == 1:
-            (y, m, d) = l[0].split(".")
-            return Date(y, m, d)
-        elif datelen == 2:
-            (y, m, d) = l[0].strip().split(".")
-            (h, min, s) = l[1].strip().split(":")
-            return Date(y, m, d, h, min, s)
-
-        raise ValueError("Date extraction only works with either YYYY.MM.DD or YYYY.MM.DD - HH.MM.SS")
-
+        while (len(s) > 0 and len(vals) < 6):
+            i = re.search("[\.:-]", s)
+            if i:
+                tmp = s[:i.start()]
+                s = s[i.start() + 1:].strip()
+            else:
+                tmp = s
+                s = ''
+            vals.append(tmp)
+        return Date(*tuple(vals))
 
     def toAtom(self):
         return Atom(str(self), False)
