@@ -4,7 +4,7 @@ import urllib.request as urllib
 from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
-from Wiki import WikiStrings
+from ScrapingEngine import WikiStrings
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
@@ -12,37 +12,37 @@ baseUrl = 'http://wikipast.epfl.ch/wikipast/index.php/'
 listPage = 'InferenceBot_page_test_-_Secundinus_Aurelianus'
 
 
-def scrap_generic(data, scrapper):
+def scrap_generic(data, scraper):
     """
-    Function for scrapping a concept from a Wikipast page. It does not rely on a particular page layout.
-    Instead, it looks for occurrences of the concept keyword (as defined by the scrapper object) and extracts 
+    Function for scraping a concept from a Wikipast page. It does not rely on a particular page layout.
+    Instead, it looks for occurrences of the concept keyword (as defined by the scraper object) and extracts 
     objects from the corresponding lines.
     
     :param data: The source code from a wiki page.
-    :param scrapper: The Scrapper class which parametrize how the actual object extraction is done.
-    :return: A set of objects corresponding to the concept scrapped.
+    :param scraper: The Scraper class which parametrize how the actual object extraction is done.
+    :return: A set of objects corresponding to the concept scraped.
     """
-    scrappedSet = set()
-    entities = scrapper.find(data)
+    scrapedSet = set()
+    entities = scraper.find(data)
 
-    logging.info("The scrapper found %d candidate entries for %s", len(entities), scrapper.keyword())
+    logging.info("The scraper found %d candidate entries for %s", len(entities), scraper.keyword())
     for candidate in entities:
         tag = candidate.parent.parent
         candidateStr = tag.text
-        logging.debug("Candidate for %s is %s", scrapper.keyword(), candidateStr)
+        logging.debug("Candidate for %s is %s", scraper.keyword(), candidateStr)
 
-        scrappedEntity = scrapper.extract(str(candidateStr))
+        scrapedEntity = scraper.extract(str(candidateStr))
 
-        logging.info("Crafted object: %s", str(scrappedEntity))
+        logging.info("Crafted object: %s", str(scrapedEntity))
 
-        scrappedSet.add(scrappedEntity)
+        scrapedSet.add(scrapedEntity)
 
-    return scrappedSet
+    return scrapedSet
 
 
-class Scrapper(metaclass=ABCMeta):
+class Scraper(metaclass=ABCMeta):
     """
-    Abstract class which defines the blueprint for a Scrapper object
+    Abstract class which defines the blueprint for a Scraper object
     """
 
     @staticmethod
@@ -72,9 +72,9 @@ class Scrapper(metaclass=ABCMeta):
         pass
 
 
-class BirthScrapper(Scrapper):
+class BirthScraper(Scraper):
     """
-    A Scrapper object specialized in scrapping births of individuals
+    A Scraper object specialized in scraping births of individuals
     """
 
     @staticmethod
@@ -113,7 +113,7 @@ class BirthScrapper(Scrapper):
         person = [x for x in person if x not in WikiStrings.BIRTH_TODISCARD]
 
         if (len(person) != 2):
-            logging.warning("The scrapper discarded a candidate birth because it " +
+            logging.warning("The scraper discarded a candidate birth because it " +
                             "did not have the correct number of names in it. " +
                             "The discarded entry is %s", s)
             return None
@@ -125,9 +125,9 @@ class BirthScrapper(Scrapper):
         return Birth(d, l, p1)
 
 
-class EncounterScrapper(Scrapper):
+class EncounterScraper(Scraper):
     """
-    A Scrapper object specialized in scrapping encounter between two individuals
+    A Scraper object specialized in scraping encounter between two individuals
     """
 
     @staticmethod
@@ -166,7 +166,7 @@ class EncounterScrapper(Scrapper):
         people = [x for x in people if x not in WikiStrings.ENCOUNTER_TODISCARD]
 
         if (len(people) != 4):
-            logging.warning("The scrapper discarded a candidate encounter because it " +
+            logging.warning("The scraper discarded a candidate encounter because it " +
                             "did not have the correct number of names in it. " +
                             "The discarded entry is %s", s)
             return None
@@ -181,8 +181,8 @@ def run():
     response = urllib.urlopen(baseUrl + listPage)
     pageSource = response.read()
     soup = BeautifulSoup(pageSource, 'lxml')
-    scrap_generic(soup, BirthScrapper)
-    scrap_generic(soup, EncounterScrapper)
+    scrap_generic(soup, BirthScraper)
+    scrap_generic(soup, EncounterScraper)
 
 if __name__ == '__main__':
     run()
