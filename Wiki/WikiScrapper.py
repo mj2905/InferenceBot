@@ -176,6 +176,7 @@ class EncounterScrapper(Scrapper):
         d = Date.extractDate(date)
         return Encounter(d, p1, p2)
 
+
 def run():
     response = urllib.urlopen(baseUrl + listPage)
     pageSource = response.read()
