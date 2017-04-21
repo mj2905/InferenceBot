@@ -33,16 +33,19 @@ class ScrapingEngine(object):
     def processUrlBatch(self, batch):
         logging.info("Attempting to scrape: %s", batch)
         results = Scraping.WikiScraper.run(batch)
-        logging.info("%s was scraped resulting in %s", batch, results)
 
-    def run(self, batchSize=10):
+        for (births, encounters) in results:
+            self.objectsDB = self.objectsDB.union(births)
+            self.objectsDB = self.objectsDB.union(encounters)
+
+    def run(self, batchSize=20):
         start = time.time()
         response = urllib.urlopen(self.baseUrl + self.listPage)
 
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
 
-        self.buildLinkDatabase(soup, 100)
+        self.buildLinkDatabase(soup)
 
         urlBatch = list()
         i = 0
@@ -58,7 +61,11 @@ class ScrapingEngine(object):
 
         end = time.time()
 
-        logging.info("Processing time was %f second(s).", end - start)
+        logging.info("Processing time was %f second(s), got:", end - start)
+        for e in self.objectsDB:
+            if e is None:
+                continue
+            logging.info("%s", str(e))
 
 
 if __name__ == '__main__':

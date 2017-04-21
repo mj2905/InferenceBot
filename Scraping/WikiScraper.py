@@ -5,8 +5,13 @@ from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
 from Scraping import WikiStrings
+from Scraping.WikiStrings import translationTable
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
+
+# Specify characters that could potentially make an entry unreadable and that should therefore be removed
+
 
 def scrap_generic(data, scraper):
     """
@@ -21,13 +26,13 @@ def scrap_generic(data, scraper):
     scrapedSet = set()
     entities = scraper.find(data)
 
-    logging.info("The scraper found %d candidate entries for %s", len(entities), scraper.keyword())
+    logging.debug("The scraper found %d candidate entries for %s", len(entities), scraper.keyword())
     for candidate in entities:
         tag = candidate.parent.parent
-        candidateStr = tag.text
+        candidateStr = str(tag.text)
         logging.debug("Candidate for %s is %s", scraper.keyword(), candidateStr)
 
-        scrapedEntity = scraper.extract(str(candidateStr))
+        scrapedEntity = scraper.extract(candidateStr)
 
         logging.info("Crafted object: %s", str(scrapedEntity))
 
@@ -75,7 +80,7 @@ class BirthScraper(Scraper):
     BAD_FORMAT = ''.join(
         ["The scraper discarded a candidate birth because it ",
          "did not have the correct format. ",
-         "The discarded entry is %s"])
+         "The discarded entry is: %s"])
 
     @staticmethod
     def keyword():
@@ -121,11 +126,11 @@ class BirthScraper(Scraper):
 
         location, person = locRes[0], locRes[1]
 
-        # Extract only people's names
-        person = person.strip().split(" ")
+        # Extract only people's names. The translation removes unwanted chars from the remaining string
+        person = person.translate(translationTable).strip().split(" ")
         person = [x for x in person if x not in WikiStrings.BIRTH_TODISCARD]
 
-        if (len(person) != 2):
+        if (len(person) < 2):
             logging.warning(BirthScraper.BAD_FORMAT, s)
             return None
 
@@ -143,7 +148,7 @@ class EncounterScraper(Scraper):
     BAD_FORMAT = ''.join(
         ["The scraper discarded a candidate encounter because it ",
          "did not have the correct format. ",
-         "The discarded entry is %s"])
+         "The discarded entry is: %s"])
 
     @staticmethod
     def keyword():
@@ -189,11 +194,11 @@ class EncounterScraper(Scraper):
 
         location, people = locRes[0], locRes[1]
 
-        # Extract only people's names
-        people = people.strip().split(" ")
+        # Extract only people's names. The translation removes unwanted characters from the string
+        people = people.translate(translationTable).strip().split(" ")
         people = [x for x in people if x not in WikiStrings.ENCOUNTER_TODISCARD]
 
-        if (len(people) != 4):
+        if (len(people) < 4):
             logging.warning(EncounterScraper.BAD_FORMAT, s)
             return None
 
@@ -205,18 +210,17 @@ class EncounterScraper(Scraper):
 
 def run(urlList):
     resList = list()
-    dataList = list()
     responseList = list()
     for url in urlList:
         try:
             response = urllib.urlopen(url)
         except:
             logging.error("The following url threw an error: %s", url)
-            return [None, None]
+            continue
 
         if response.getcode() != 200:
             logging.error("The following url could not be reached: %s", url)
-            return [None, None]
+            continue
 
         responseList.append(response)
 

@@ -9,8 +9,11 @@ Example:
     The relevant pieces of information are the date, A and B. Therefore, for the encounter keyword we discard
     "Rencontre", "de" and "avec"
 """
+dateTranslationTable = {ord(c): None for c in '-'}
+translationTable = {ord(c): None for c in '0123456789|[](){}.:;/*%&?!^='}
 
+IGNORED_CHARS = ["[", "]"]
 BIRTH = "Naissance"
 BIRTH_TODISCARD = ["Naissance", "de"]
 ENCOUNTER = "Rencontre"
-ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec"]
+ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec", "entre", "et"]

@@ -175,7 +175,7 @@ class Encounter(Event):
         self.person2 = person2
 
     def __key(self):
-        return (self.date, self.person1, self.person2)
+        return (self.date, hash(self.person1) ^ hash(self.person2))
 
     def __str__(self):
         return str(self.date) + " - Rencontre de " + str(self.person1) + " et " + str(self.person2) + "."
