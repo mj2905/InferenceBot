@@ -11,7 +11,7 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 def scrap_generic(data, scraper):
     """
     Function for scraping a concept from a Wikipast page. It does not rely on a particular page layout.
-    Instead, it looks for occurrences of the concept keyword (as defined by the scraper object) and extracts 
+    Instead, it looks for occurrences of the concept keyword (as defined by the scraper object) and extracts
     objects from the corresponding lines.
     
     :param data: The source code from a wiki page.
@@ -36,16 +36,56 @@ def scrap_generic(data, scraper):
     return scrapedSet
 
 
+def extractHelper(s, stringToDiscard, name):
+    BAD_FORMAT = ''.join(
+        ["The scraper discarded a candidate ", name,
+         " because it ",
+         "did not have the correct format. ",
+         "The discarded entry is %s"])
+
+    if s.endswith("."):
+        s = s[:-1]
+
+    dateRes = s.split("/")
+
+    if (len(dateRes) != 2):
+        logging.warning(BAD_FORMAT, s)
+        return None
+
+    date, locAndEvent = dateRes[0], dateRes[1]
+
+    locRes = locAndEvent.split(".", 1)  # Specify at most 1 split to retrieve location
+
+    if (len(locRes) != 2):
+        logging.warning(BAD_FORMAT, s)
+        return None
+
+    location, person = locRes[0], locRes[1]
+
+    # Extract only people's names
+    person = person.strip().split(" ")
+    person = [x for x in person if x not in stringToDiscard]
+
+    if (len(person) != 2):
+        logging.warning(BAD_FORMAT, s)
+        return None
+
+    p1 = Person(person[0], person[1])
+    d = Date.extractDate(date)
+    l = Location(location)
+
+    return d, l, p1
+
 class Scraper(metaclass=ABCMeta):
     """
-    Abstract class which defines the blueprint for a Scraper object
+    Abstract class which defines the blueprint for a Scrapper object
     """
 
     @staticmethod
     @abstractmethod
     def keyword():
         """
-        :return: The keyword describing which concept to scrap 
+        :return: The keyword describing which concept to scrap
         """
         pass
 
@@ -72,11 +112,6 @@ class BirthScraper(Scraper):
     """
     A Scraper object specialized in scraping births of individuals
     """
-    BAD_FORMAT = ''.join(
-        ["The scraper discarded a candidate birth because it ",
-         "did not have the correct format. ",
-         "The discarded entry is %s"])
-
     @staticmethod
     def keyword():
         return WikiStrings.BIRTH
@@ -102,38 +137,48 @@ class BirthScraper(Scraper):
         :return: An Birth object if it was possible to extract one, None otherwise.
         """
         # Remove trailing dot
-        if s.endswith("."):
-            s = s[:-1]
-
-        dateRes = s.split("/")
-
-        if (len(dateRes) != 2):
-            logging.warning(BirthScraper.BAD_FORMAT, s)
+        temp = extractHelper(s, WikiStrings.BIRTH_TODISCARD, "birth")
+        if temp is None:
             return None
-
-        date, locAndBirth = dateRes[0], dateRes[1]
-
-        locRes = locAndBirth.split(".", 1)  # Specify at most 1 split to retrieve location
-
-        if (len(locRes) != 2):
-            logging.warning(BirthScraper.BAD_FORMAT, s)
-            return None
-
-        location, person = locRes[0], locRes[1]
-
-        # Extract only people's names
-        person = person.strip().split(" ")
-        person = [x for x in person if x not in WikiStrings.BIRTH_TODISCARD]
-
-        if (len(person) != 2):
-            logging.warning(BirthScraper.BAD_FORMAT, s)
-            return None
-
-        p1 = Person(person[0], person[1])
-        d = Date.extractDate(date)
-        l = Location(location)
-
+        else:
+            (d, l, p1) = temp
         return Birth(d, l, p1)
+
+
+class DeathScrapper(Scraper):
+    @staticmethod
+    def keyword():
+        return WikiStrings.DEATH
+
+    @staticmethod
+    def find(data):
+        return data.findAll(string=WikiStrings.DEATH)
+
+    @staticmethod
+    def extract(s):
+        """
+        The usual birth format is the following:
+
+        1234.56.78 / Location. Naissance de X.
+
+        The line is first split at '/' to retrieve the date, then at the first dot to retrieve the location and
+        finally splits the remaining string at each space. The resulting list is filtered according to the list of
+        words to discard as given in the WikiStrings file and the Birth object is created with the remaining data.
+        This data is assumed to be the first and last name of an individual, nothing more, nothing less. If the
+        remaining data does not math the format expected it is discarded and the entry is logged.
+
+        :param **kwargs:
+        :param s: The string entry from which to extract a birth
+        :return: An Birth object if it was possible to extract one, None otherwise.
+        """
+        # Remove trailing dot
+
+        temp = extractHelper(s, WikiStrings.DEATH_TODISCARD, "death")
+        if temp is None:
+            return None
+        else:
+            (d, l, p1) = temp
+        return Death(d, l, p1)
 
 
 class EncounterScraper(Scraper):
@@ -224,8 +269,8 @@ def run(urlList):
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
         births = scrap_generic(soup, BirthScraper)
-        encounters = scrap_generic(soup, EncounterScraper)
-        resList.append([births, encounters])
+        deaths = scrap_generic(soup, DeathScrapper)
+        resList.append([births, deaths])
 
     return resList
 

@@ -121,9 +121,18 @@ class Date(Atomiseable):
 
         raise ValueError("Date extraction only works with either YYYY.MM.DD or YYYY.MM.DD - HH.MM.SS")
 
-
     def toAtom(self):
         return Atom(str(self), False)
+
+    def isBefore(self, other):
+        return (self.year, self.month, self.day) < (other.year, other.month, other.day)
+
+    def isBeforePredicate(self, other):
+        before = "avant"
+        if self.isBefore(other):
+            return Predicate([self.toAtom(), other.toAtom()], before)
+        else:
+            return Predicate([other.toAtom(), self.toAtom()], before)
 
 
 class Event(Predicateable):
@@ -146,17 +155,21 @@ class Event(Predicateable):
         pass
 
 
-class Birth(Event):
-    def __init__(self, date, location, person):
-        super().__init__(date)
+class LifeEvent(Event, metaclass=ABCMeta):
+    def __init__(self, date, location, person, strName, predicateName=None):
+        super(LifeEvent, self).__init__(date)
         self.location = location
         self.person = person
+        self.strName = strName
+        if predicateName is None:
+            predicateName = strName
+        self.predicateName = predicateName
 
     def __key(self):
         return (self.date, self.location, self.person)
 
     def __str__(self):
-        return str(self.date) + " / " + str(self.location) + ". Naissance de " + str(self.person) + "."
+        return str(self.date) + " / " + str(self.location) + ". " + self.strName + " de " + str(self.person) + "."
 
     def __hash__(self):
         return hash(self.__key())
@@ -165,7 +178,17 @@ class Birth(Event):
         return self.__key() == other.__key()
 
     def toPredicate(self):
-        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], "birth")
+        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], self.predicateName)
+
+
+class Birth(LifeEvent):
+    def __init__(self, date, location, person):
+        super(Birth, self).__init__(date, location, person, "Naissance")
+
+
+class Death(LifeEvent):
+    def __init__(self, date, location, person):
+        super(Death, self).__init__(date, location, person, "Mort")
 
 
 class Encounter(Event):
@@ -192,6 +215,7 @@ class Encounter(Event):
 
 def main():
     pass
+
 
 if __name__ == '__main__':
     main()

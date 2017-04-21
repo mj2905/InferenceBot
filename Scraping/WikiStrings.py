@@ -11,6 +11,16 @@ Example:
 """
 
 BIRTH = "Naissance"
+DEATH = "Mort"
+
+BEFORE = "avant"
+AFTER = "apres"
+
 BIRTH_TODISCARD = ["Naissance", "de"]
+DEATH_TODISCARD = ["Mort", "de"]
+
+
 ENCOUNTER = "Rencontre"
 ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec"]
+
+ERROR_DATE = "Erreur de date"
