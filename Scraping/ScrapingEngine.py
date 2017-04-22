@@ -5,6 +5,7 @@ import urllib.request as urllib
 from bs4 import BeautifulSoup
 
 import Scraping.WikiScraper
+from Scraping.WikiStrings import validWikiUrl
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -28,7 +29,7 @@ class ScrapingEngine(object):
                 i += 1
 
         # Validate links
-        self.linksDB = [x for x in self.linksDB if x not in ["#", None]]
+        self.linksDB = [x for x in self.linksDB if validWikiUrl(x)]
 
     def processUrlBatch(self, batch):
         logging.info("Attempting to scrape: %s", batch)
@@ -37,7 +38,7 @@ class ScrapingEngine(object):
         for (births, deaths, encounters) in results:
             self.objectsDB = self.objectsDB.union(births.union(deaths).union(encounters))
 
-    def run(self, batchSize=3):
+    def run(self, batchSize=10):
         start = time.time()
         response = urllib.urlopen(self.baseUrl + self.listPage)
 

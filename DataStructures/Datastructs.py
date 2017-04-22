@@ -25,9 +25,6 @@ class Predicateable(metaclass=ABCMeta):
     def toPredicate(self):
         pass
 
-    def __hash__(self):
-        return hash(self.__key())
-
 
 class Person(Atomiseable):
     """

@@ -26,3 +26,13 @@ ENCOUNTER = "Rencontre"
 ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec", "entre", "et"]
 
 ERROR_DATE = "Erreur de date"
+
+
+def validWikiUrl(url):
+    if url in ["#", None]:
+        return False
+    if url.startswith("http") or url.startswith("www") or url.startswith("/www"):
+        return False
+    if -1 != url.find("Wikipast:"):
+        return False
+    return True

@@ -249,7 +249,6 @@ def processUrl(url, responses, i):
 
     responses[i] = tmp
 
-
 def run(urlList):
     resList = list()
     responses = [None] * len(urlList)
