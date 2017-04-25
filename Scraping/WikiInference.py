@@ -38,9 +38,12 @@ class BirthInferenceChecker(InferenceChecker):
     def checkIfErrors(self):
 
         # Insert the url to check from
-        births, deaths = \
-        WikiScraper.run(['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])[
-            0]
+        wikiData = \
+            WikiScraper.run(
+                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
+
+        births = wikiData.births
+        deaths = wikiData.deaths
 
         birthsFacts = list(map(lambda x: x.toPredicate(), births))
         deathFacts = list(map(lambda x: x.toPredicate(), deaths))
@@ -55,6 +58,37 @@ class BirthInferenceChecker(InferenceChecker):
         return self.moteur.chain()
 
 
+class EncounterInferenceChecker(InferenceChecker):
+    def __init__(self, facts=None):
+        super().__init__(WikiRules.ENCOUNTER_RULES, facts)
+
+    def checkIfErrors(self):
+
+        # Insert the url to check from
+        resData = \
+            WikiScraper.run(
+                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
+
+        encounters = resData.encounters
+        positions = resData.positions
+
+        encountersFacts = list(map(lambda x: x.toPredicate(), encounters))
+        positionsFacts = list(map(lambda x: x.toPredicate(), positions))
+
+        self.addFacts(encountersFacts)
+        self.addFacts(positionsFacts)
+
+        for e in encounters:
+            for p in positions:
+                temp = e.location.isFarPredicate(p.location)
+                if temp is not None:
+                    if e.person1 == p.person:
+                        self.addFact(temp)
+                    if e.person2 == p.person:
+                        self.addFact(temp)
+
+        return self.moteur.chain()
+
 if __name__ == '__main__':
-    t = BirthInferenceChecker()
+    t = EncounterInferenceChecker()
     print(t.checkIfErrors())

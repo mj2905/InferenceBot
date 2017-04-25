@@ -1,9 +1,6 @@
-from InferenceEngine.ForwardChainingWithVariables import ForwardChainingWithVariables
-from InferenceEngine.Knowledge import KnowledgeBase
-from InferenceEngine.Predicate import Atom, Predicate
-from InferenceEngine.RuleWithVariable import RuleWithVariable
-from InferenceEngine.Unificator import Unificator
+import re
 
+"""
 # Nom de variables
 x = Atom('x', True)
 y = Atom('y', True)
@@ -89,3 +86,7 @@ moteur = ForwardChainingWithVariables(knowledge=bc, method=filtre)
 resultat = moteur.chain()
 
 print(resultat)
+"""
+
+s = '1234.12.12 / Rome. Naissance de Secundinus Aurelianus.'
+print(re.sub('\w+ de ', '', s))

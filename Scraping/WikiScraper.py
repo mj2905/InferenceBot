@@ -10,6 +10,7 @@ from Scraping.WikiStrings import translationTable
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
+
 def scrap_generic(data, scraper):
     """
     Function for scraping a concept from a Wikipast page. It does not rely on a particular page layout.
@@ -110,8 +111,10 @@ class Scraper(metaclass=ABCMeta):
         location, person = locRes[0], locRes[1]
 
         # Extract only people's names
-        person = person.translate(translationTable).strip().split(" ")
-        person = [x for x in person if x not in stringsToDiscard]
+        # person = person.translate(translationTable).strip().split(" ")
+        # person = [x for x in person if x not in stringsToDiscard]
+        person = re.sub(stringsToDiscard, '', person).split(" ")
+        person = [x for x in person if x != '']
 
         if (len(person) < 2):
             logging.warning(BAD_FORMAT, s)
@@ -203,6 +206,7 @@ class DeathScraper(Scraper):
     """
     A Scraper class specialized in scraping deaths of individuals
     """
+
     @staticmethod
     def keyword():
         return WikiStrings.DEATH
@@ -215,6 +219,26 @@ class DeathScraper(Scraper):
     def extract(s):
         tmp = Scraper.unaryEventExtractor(s, WikiStrings.DEATH_TODISCARD, WikiStrings.DEATH)
         return None if tmp is None else Death(*tmp)
+
+
+class PositionScraper(Scraper):
+    """
+    A Scraper class specialized in scraping births of individuals
+    """
+
+    @staticmethod
+    def keyword():
+        return WikiStrings.POSITION
+
+    @staticmethod
+    def find(data):
+        return data.findAll(string=WikiStrings.POSITION) \
+            # +data.findAll(string=WikiStrings.DEATH)+ data.findAll(string=WikiStrings.BIRTH)
+
+    @staticmethod
+    def extract(s):
+        tmp = Scraper.unaryEventExtractor(s, WikiStrings.POSITION_TODISCARD, WikiStrings.POSITION)
+        return None if tmp is None else Position(*tmp)
 
 
 class EncounterScraper(Scraper):
@@ -249,8 +273,9 @@ def processUrl(url, responses, i):
 
     responses[i] = tmp
 
+
 def run(urlList):
-    resList = list()
+    resData = WikiData()
     responses = [None] * len(urlList)
     processes = []
 
@@ -272,11 +297,26 @@ def run(urlList):
         births = scrap_generic(soup, BirthScraper)
         deaths = scrap_generic(soup, DeathScraper)
         encounters = scrap_generic(soup, EncounterScraper)
+        positions = scrap_generic(soup, PositionScraper)
 
-        resList.append([births, deaths, encounters])
+        resData.addData(births, deaths, encounters, positions)
 
-    return resList
+    return resData
 
 
 if __name__ == '__main__':
     run()
+
+
+class WikiData:
+    def __init__(self):
+        self.deaths = set()
+        self.births = set()
+        self.encounters = set()
+        self.positions = set()
+
+    def addData(self, deaths, births, encounters, positions):
+        self.deaths = self.deaths | deaths
+        self.births = self.births | births
+        self.encounters = self.encounters | encounters
+        self.positions = self.positions | positions

@@ -18,14 +18,21 @@ DEATH = "Mort"
 BEFORE = "avant"
 AFTER = "apres"
 
-BIRTH_TODISCARD = ["Naissance", "de"]
-DEATH_TODISCARD = ["Mort", "de"]
+BIRTH_TODISCARD = 'Naissance de '
+DEATH_TODISCARD = 'Mort de '
+POSITION_TODISCARD = '\w+ de '
+
+CLOSE = "proche"
+FAR = "loin"
 
 
 ENCOUNTER = "Rencontre"
 ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec", "entre", "et"]
 
+POSITION = "Position"
+
 ERROR_DATE = "Erreur de date"
+ERROR_ENCOUNTER = "Erreur de rencontre"
 
 
 def validWikiUrl(url):

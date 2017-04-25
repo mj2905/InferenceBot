@@ -74,6 +74,15 @@ class Location(Atomiseable):
     def toAtom(self):
         return Atom(self.name, False)
 
+    # TODO: Change this method
+    def isFar(self, other):
+        return self != other
+
+    def isFarPredicate(self, other):
+        far = "loin"
+        if self.isFar(other):
+            return Predicate([self.toAtom(), other.toAtom()], far)
+
 
 class Date(Atomiseable):
     """
@@ -189,6 +198,11 @@ class Death(LifeEvent):
         super(Death, self).__init__(date, location, person, "Mort")
 
 
+class Position(LifeEvent):
+    def __init__(self, date, location, person):
+        super(Position, self).__init__(date, location, person, "Position")
+
+
 class Encounter(Event):
     def __init__(self, date, location, person1, person2):
         super().__init__(date)
@@ -209,11 +223,13 @@ class Encounter(Event):
         return self.__key() == other.__key()
 
     def toPredicate(self):
-        return Predicate([self.person1.toAtom(), self.person2.toAtom()], "encounter")
+        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person1.toAtom(), self.person2.toAtom()],
+                         "Rencontre")
 
 
 def main():
     pass
+
 
 if __name__ == '__main__':
     main()
