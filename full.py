@@ -36,3 +36,5 @@ def pretty(list):
         elif("Erreur de rencontre" in elem.name):
             newList.append(elem.name + " : [[" + elem.propositions[3].name + "]] et [[" + elem.propositions[4].name + "]] se sont rencontrés à [[" + elem.propositions[1].name + "]] et à [[" + elem.propositions[2].name + "]] en même temps à la date " + elem.propositions[0].name)
     return newList
+
+write_birth_check()
