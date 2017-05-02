@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
-user = 'testbot'
-passw = 'dhbot2017'
+user = 'InferenceBot'
+passw = 'praisekek'
 baseurl = 'http://wikipast.epfl.ch/wikipast/'
 summary = 'Wikipastbot update'
 listPage = 'InferenceBot - Listes des pages de test'
