@@ -42,3 +42,9 @@ ENCOUNTER_RULES = [
     [[Predicate([d1, l1, p1, p2], encounter), Predicate([d1, l2, p2], position),
       Predicate([l1, l2], far)],
      Predicate([d1, l1, l2, p1, p2], error_encounter)]]
+# Rule ideas:
+    #Date de Distinction > Date naissance
+    #Date d'Election > Date naissance et < Date mort
+    #Naissance enfant > naissance personne en question
+    #Hypermot nécessitant un nom mais qui n'est pas suivi d'un nom (naissance sans nom de l'enfant, election, ...)
+    #Autres pages intéressantes : Mariage, démission, nomination, participation 
