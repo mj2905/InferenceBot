@@ -51,6 +51,10 @@ Refer to the documentation in the source code for further details.
 
 ## Wiki editing
 
+For now, we only write in a page named InferenceBot - Output. We can use the function writeO
+_on_page given in Editing.WikiWriter to write directly on the wiki.
+There will be sections allocated to users in this page. Each time we run the script, everything is written again.
+
 ## Wiki format specifications
 
 ## Test pages
@@ -68,7 +72,7 @@ InferenceBot page test - John Doe
 ```
 
 ### Format
-Unles mentionned otherwise, Wikipast pages format should follow the convention adopted in class.
+Unless mentionned otherwise, Wikipast pages format should follow the convention adopted in class.
 #### People
 Dummy people name can be generated from [this website](http://www.behindthename.com/random/). Use of ancient latin
 names is encouraged as it is easier to differentiate them from actual people names.
