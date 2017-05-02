@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from ..Scraping.WikiInference import BirthInferenceChecker
 
 user = 'testbot'
 passw = 'dhbot2017'
@@ -9,17 +8,6 @@ summary = 'Wikipastbot update'
 listPage = 'InferenceBot - Listes des pages de test'
 writePage = 'InferenceBot - Output'
 
-
-def write_birth_check():
-
-    toKeep = 'Erreur'
-
-    bic = BirthInferenceChecker()
-    list = bic.checkIfErrors()
-
-    listFiltered = [x for elem in list if toKeep in elem]
-    s = '\n'.join(listFiltered)
-    write_on_page(s)
 
 
 def write_on_page(text, page = writePage):
