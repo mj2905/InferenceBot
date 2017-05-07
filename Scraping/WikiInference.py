@@ -122,5 +122,5 @@ class ElectionInferenceChecker(InferenceChecker):
 
 
 if __name__ == '__main__':
-    t = EncounterInferenceChecker()
+    t = BirthInferenceChecker()
     print(t.checkIfErrors())

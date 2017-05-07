@@ -318,7 +318,7 @@ def run(urlList):
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
 
-        resData.addData(births, deaths, encounters, positions, elections)
+        resData.addData(deaths, births, encounters, positions, elections)
 
     return resData
 
