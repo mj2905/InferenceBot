@@ -59,3 +59,10 @@ ELECTION_RULES = [
     Predicate([d3, d1], before), Predicate([d2, d3], before)],
     Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)]
 ]
+
+# Rule ideas:
+    #Date de Distinction > Date naissance
+    #Date d'Election > Date naissance et < Date mort
+    #Naissance enfant > naissance personne en question
+    #Hypermot nécessitant un nom mais qui n'est pas suivi d'un nom (naissance sans nom de l'enfant, election, ...)
+    #Autres pages intéressantes : Mariage, démission, nomination, participation
