@@ -17,6 +17,8 @@ DEATH = "Mort"
 
 BEFORE = "avant"
 AFTER = "apres"
+DIFFERENT = "different"
+SAME = "same"
 
 BIRTH_TODISCARD = 'Naissance de '
 DEATH_TODISCARD = 'Mort de '
@@ -33,6 +35,8 @@ POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
 ERROR_ENCOUNTER = "Erreur de rencontre"
+ERROR_BIRTH = "Plusieurs naissances"
+ERROR_DEATH = "Plusieurs morts"
 
 
 def validWikiUrl(url):
