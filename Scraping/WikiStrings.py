@@ -46,8 +46,6 @@ ERROR_ELECTION = "Erreur d'election"
 def validWikiUrl(url):
     if url in ["#", None]:
         return False
-    if url.startswith("http") or url.startswith("www") or url.startswith("/www"):
-        return False
     if -1 != url.find("Wikipast:"):
         return False
     return True

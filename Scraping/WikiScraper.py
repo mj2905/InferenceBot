@@ -9,8 +9,6 @@ from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
 from Scraping.WikiStrings import translationTable
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
-
 
 def scrap_generic(data, scraper):
     """
