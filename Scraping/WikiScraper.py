@@ -278,6 +278,25 @@ class ElectionScraper(Scraper):
         return None if tmp is None else Election(*tmp)
 
 
+class MariageScraper(Scraper):
+    """
+    A Scapper class specialized in scrapping mariage of individuals
+    """
+
+    @staticmethod
+    def keyword():
+        return WikiStrings.MARIAGE
+
+    @staticmethod
+    def find(data):
+        return data.findAll(string=WikiStrings.MARIAGE)
+
+    @staticmethod
+    def extract(s):
+        tmp = Scraper.binaryEventExtractor(s, WikiStrings.MARIAGE_TODISCARD, WikiStrings.MARIAGE)
+        return None if tmp is None else Mariage(*tmp)
+
+
 def processUrl(url, responses, i):
     tmp = None
     try:
@@ -317,8 +336,9 @@ def run(urlList):
         encounters = scrap_generic(soup, EncounterScraper)
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
+        mariages = scrap_generic(soup, MariageScraper)
 
-        resData.addData(deaths, births, encounters, positions, elections)
+        resData.addData(deaths, births, encounters, positions, elections, mariages)
 
     return resData
 
@@ -334,10 +354,12 @@ class WikiData:
         self.encounters = set()
         self.positions = set()
         self.elections = set()
+        self.mariages = set()
 
-    def addData(self, deaths, births, encounters, positions, elections):
+    def addData(self, deaths, births, encounters, positions, elections, mariages):
         self.deaths = self.deaths | deaths
         self.births = self.births | births
         self.encounters = self.encounters | encounters
         self.positions = self.positions | positions
         self.elections = self.elections | elections
+        self.mariages = self.mariages | mariages

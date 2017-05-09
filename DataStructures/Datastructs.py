@@ -187,6 +187,33 @@ class LifeEvent(Event, metaclass=ABCMeta):
     def toPredicate(self):
         return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], self.predicateName)
 
+class SocialEvent(Event, metaclass=ABCMeta):
+    def __init__(self, date, location, person1, person2, strName, predicateName=None):
+        super(SocialEvent, self).__init__(date)
+        self.location = location
+        self.person1 = person1
+        self.person2 = person2
+        self.strName = strName
+        if predicateName is None:
+            predicateName = strName
+        self.predicateName = predicateName
+
+    def __key(self):
+        return (self.date, self.location, hash(self.person1) ^ hash(self.person2))
+
+    def __str__(self):
+        return str(self.date) + " - " + self.strName + " de " + str(self.person1) + " et " + str(self.person2) + "."
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        return self.__key() == other.__key()
+
+    def toPredicate(self):
+        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person1.toAtom(), self.person2.toAtom()],
+                         self.predicateName)
+
 
 class Birth(LifeEvent):
     def __init__(self, date, location, person):
@@ -206,7 +233,15 @@ class Election(LifeEvent):
     def __init__(self, date, location, person):
         super(Election, self).__init__(date, location, person, "Election")
 
+class Encounter(SocialEvent):
+    def __init__(self, date, location, person1, person2):
+        super(Encounter, self).__init__(date, location, person1, person2, "Rencontre")
 
+class Mariage(SocialEvent):
+    def __init__(self, date, location, person1, person2):
+        super(Mariage, self).__init__(date, location, person1, person2, "Mariage")
+
+"""
 class Encounter(Event):
     def __init__(self, date, location, person1, person2):
         super().__init__(date)
@@ -229,7 +264,7 @@ class Encounter(Event):
     def toPredicate(self):
         return Predicate([self.date.toAtom(), self.location.toAtom(), self.person1.toAtom(), self.person2.toAtom()],
                          "Rencontre")
-
+"""
 
 def main():
     pass

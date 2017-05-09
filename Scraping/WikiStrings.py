@@ -32,11 +32,15 @@ ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec", "entre", "et"]
 ELECTION = "Election"
 ELECTION_TODISCARD = 'Election de '
 
+MARIAGE = "Mariage"
+MARIAGE_TODISCARD = ["Mariage", "de", "avec", "entre", "et"]
+
 POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
 ERROR_ENCOUNTER = "Erreur de rencontre"
 ERROR_ELECTION = "Erreur d'election"
+ERROR_MARIAGE = "Erreur de mariage"
 
 
 def validWikiUrl(url):

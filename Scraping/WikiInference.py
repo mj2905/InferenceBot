@@ -40,7 +40,8 @@ class BirthInferenceChecker(InferenceChecker):
         # Insert the url to check from
         wikiData = \
             WikiScraper.run(
-                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
+                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+                'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
         births = wikiData.births
         deaths = wikiData.deaths
@@ -117,6 +118,40 @@ class ElectionInferenceChecker(InferenceChecker):
                 self.addFact(d.date.isBeforePredicate(e.date))
             for b in births:
                 self.addFact(e.date.isBeforePredicate(b.date))
+
+        return self.moteur.chain()
+
+class MariageInferenceChecker(InferenceChecker):
+    def __init__(self, facts=None):
+        super().__init__(WikiRules.MARIAGE_RULES, facts)
+
+    def checkIfErrors(self):
+
+        resData = \
+            WikiScraper.run(
+                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+                'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
+
+        births = resData.births
+        deaths = resData.deaths
+        mariages = resData.mariages
+
+        mariagesFacts = list(map(lambda x: x.toPredicate(), mariages))
+        birthsFacts = list(map(lambda x: x.toPredicate(), births))
+        deathFacts = list(map(lambda x: x.toPredicate(), deaths))
+
+        self.addFacts(mariagesFacts)
+        self.addFacts(birthsFacts)
+        self.addFacts(deathFacts)
+
+
+        for m in mariages:
+            for d in deaths:
+                if m.person1 == d.person or m.person2 == d.person :
+                    self.addFact(d.date.isBeforePredicate(m.date))
+            for b in births:
+                if m.person1 == b.person or m.person2 == b.person :
+                    self.addFact(m.date.isBeforePredicate(b.date))
 
         return self.moteur.chain()
 
