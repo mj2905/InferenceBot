@@ -33,7 +33,10 @@ class InferenceChecker(metaclass=ABCMeta):
 
 class BirthInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
-        super().__init__(WikiRules.DEATH_BIRTH_RULES, facts)
+        list = WikiRules.DEATH_BIRTH_RULES
+        list.extend(WikiRules.BIRTH_MULTITIMES)
+        list.extend(WikiRules.DEATH_BIRTH_RULES)
+        super().__init__(list, facts)
 
     def checkIfErrors(self):
 
@@ -54,6 +57,11 @@ class BirthInferenceChecker(InferenceChecker):
         for d in deaths:
             for b in births:
                 self.addFact(d.date.isBeforePredicate(b.date))
+
+        for b1 in births:
+            for b2 in births:
+                print("1")
+                self.addFact(b1.date.isDifferentPredicate(b2.date))
 
         return self.moteur.chain()
 

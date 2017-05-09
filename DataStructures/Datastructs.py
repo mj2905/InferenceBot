@@ -134,12 +134,23 @@ class Date(Atomiseable):
     def isBefore(self, other):
         return (self.year, self.month, self.day) < (other.year, other.month, other.day)
 
+    def isDifferent(self, other):
+        return (self.year, self.month, self.day) != (other.year, other.month, other.day)
+
     def isBeforePredicate(self, other):
         before = "avant"
         if self.isBefore(other):
             return Predicate([self.toAtom(), other.toAtom()], before)
         else:
             return Predicate([other.toAtom(), self.toAtom()], before)
+
+    def isDifferentPredicate(self, other):
+        different = "different"
+        same = "same"
+        if self.isDifferent(other):
+            return Predicate([self.toAtom(), other.toAtom()], different)
+        else:
+            return Predicate([self.toAtom(), other.toAtom()], same)
 
 
 class Event(Predicateable):

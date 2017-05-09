@@ -17,6 +17,7 @@ p2 = Atom('p2', True)
 
 # Name of Predicate
 before = WikiStrings.BEFORE
+different = WikiStrings.DIFFERENT
 #  after = WikiStrings.AFTER
 birth = WikiStrings.BIRTH
 death = WikiStrings.DEATH
@@ -26,8 +27,14 @@ position = WikiStrings.POSITION
 # close = WikiStrings.CLOSE
 far = WikiStrings.FAR
 error_encounter = WikiStrings.ERROR_ENCOUNTER
+error_multi_birth = WikiStrings.ERROR_BIRTH
+error_multi_death = WikiStrings.ERROR_DEATH
 
 # Rules
+
+BIRTH_MULTITIMES = [[[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], birth)], Predicate([d1, d2], different), Predicate([p1, d1, d2], error_multi_birth)]]
+DEATH_MULTITIMES = [[[Predicate([d1, l1, p1], death), Predicate([d2, l2, p1], death)], Predicate([d1, d2], different), Predicate([p1, d1, d2], error_multi_death)]]
+
 DEATH_BIRTH_RULES = [
     # [[Predicate([y, x], before)], Predicate([x, y], after)],
     #  [[Predicate([y, x], after)], Predicate([x, y], before)],

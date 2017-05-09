@@ -1,6 +1,7 @@
 import re
 
 """
+
 # Nom de variables
 x = Atom('x', True)
 y = Atom('y', True)
@@ -85,7 +86,9 @@ filtre = unificateur
 moteur = ForwardChainingWithVariables(knowledge=bc, method=filtre)
 resultat = moteur.chain()
 
-print(resultat)
+print(type(resultat))
+
+
 """
 
 s = '1234.12.12 / Rome. Naissance de Secundinus Aurelianus.'
