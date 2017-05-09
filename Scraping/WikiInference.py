@@ -97,6 +97,38 @@ class EncounterInferenceChecker(InferenceChecker):
 
         return self.moteur.chain()
 
+class ElectionInferenceChecker(InferenceChecker):
+    def __init__(self, facts=None):
+        super().__init__(WikiRules.ELECTION_RULES, facts)
+
+    def checkIfErrors(self):
+
+        resData = \
+            WikiScraper.run(
+                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
+
+        births = resData.births
+        deaths = resData.deaths
+        elections = resData.elections
+
+        electionsFacts = list(map(lambda x: x.toPredicate(), elections))
+        birthsFacts = list(map(lambda x: x.toPredicate(), births))
+        deathFacts = list(map(lambda x: x.toPredicate(), deaths))
+
+        self.addFacts(electionsFacts)
+        self.addFacts(birthsFacts)
+        self.addFacts(deathFacts)
+
+
+        for e in elections:
+            for d in deaths:
+                self.addFact(d.date.isBeforePredicate(e.date))
+            for b in births:
+                self.addFact(e.date.isBeforePredicate(b.date))
+
+        return self.moteur.chain()
+
+
 if __name__ == '__main__':
-    t = EncounterInferenceChecker()
+    t = BirthInferenceChecker()
     print(t.checkIfErrors())

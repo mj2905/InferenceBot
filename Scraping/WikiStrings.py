@@ -3,9 +3,9 @@ This file defines a keyword for each type of event that can be scrapped on Wikip
 corresponds a list of irrelevant words for the scrapper that should be discared when parsing the corresponding line.
 
 Example:
-    
+
     1234.56.78 / LocationCity. Rencontre de A avec B.
-    
+
     The relevant pieces of information are the date, A and B. Therefore, for the encounter keyword we discard
     "Rencontre", "de" and "avec"
 """
@@ -31,12 +31,16 @@ FAR = "loin"
 ENCOUNTER = "Rencontre"
 ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec", "entre", "et"]
 
+ELECTION = "Election"
+ELECTION_TODISCARD = 'Election de '
+
 POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
 ERROR_ENCOUNTER = "Erreur de rencontre"
 ERROR_BIRTH = "Plusieurs naissances"
 ERROR_DEATH = "Plusieurs morts"
+ERROR_ELECTION = "Erreur d'election"
 
 
 def validWikiUrl(url):

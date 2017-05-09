@@ -6,7 +6,7 @@ from InferenceEngine.Predicate import Atom, Predicate
 
 class Atomiseable(metaclass=ABCMeta):
     """
-    Abstract class that provides a function for converting the object into 
+    Abstract class that provides a function for converting the object into
     an Atom which can then be parsed by the inference engine
     """
 
@@ -212,6 +212,10 @@ class Death(LifeEvent):
 class Position(LifeEvent):
     def __init__(self, date, location, person):
         super(Position, self).__init__(date, location, person, "Position")
+
+class Election(LifeEvent):
+    def __init__(self, date, location, person):
+        super(Election, self).__init__(date, location, person, "Election")
 
 
 class Encounter(Event):

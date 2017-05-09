@@ -5,6 +5,7 @@ from Scraping import WikiStrings
 
 d1 = Atom('d1', True)
 d2 = Atom('d2', True)
+d3 = Atom('d3', True)
 
 # Location Variables
 l1 = Atom('l1', True)
@@ -19,16 +20,20 @@ p2 = Atom('p2', True)
 before = WikiStrings.BEFORE
 different = WikiStrings.DIFFERENT
 #  after = WikiStrings.AFTER
+after = WikiStrings.AFTER
 birth = WikiStrings.BIRTH
 death = WikiStrings.DEATH
 error_date = WikiStrings.ERROR_DATE
 encounter = WikiStrings.ENCOUNTER
 position = WikiStrings.POSITION
+election = WikiStrings.ELECTION
 # close = WikiStrings.CLOSE
 far = WikiStrings.FAR
 error_encounter = WikiStrings.ERROR_ENCOUNTER
 error_multi_birth = WikiStrings.ERROR_BIRTH
 error_multi_death = WikiStrings.ERROR_DEATH
+
+error_election = WikiStrings.ERROR_ELECTION
 
 # Rules
 
@@ -49,3 +54,23 @@ ENCOUNTER_RULES = [
     [[Predicate([d1, l1, p1, p2], encounter), Predicate([d1, l2, p2], position),
       Predicate([l1, l2], far)],
      Predicate([d1, l1, l2, p1, p2], error_encounter)]]
+
+# Rules
+ELECTION_RULES = [
+    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p1], election),
+    Predicate([d3, d2], before), Predicate([d3, d1], before)],
+    Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)],
+    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p1], election),
+    Predicate([d1, d3], before), Predicate([d2, d3], before)],
+    Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)],
+    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p1], election),
+    Predicate([d3, d1], before), Predicate([d2, d3], before)],
+    Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)]
+]
+
+# Rule ideas:
+    #Date de Distinction > Date naissance
+    #Date d'Election > Date naissance et < Date mort
+    #Naissance enfant > naissance personne en question
+    #Hypermot nécessitant un nom mais qui n'est pas suivi d'un nom (naissance sans nom de l'enfant, election, ...)
+    #Autres pages intéressantes : Mariage, démission, nomination, participation

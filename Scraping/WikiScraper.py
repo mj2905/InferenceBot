@@ -14,9 +14,9 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 def scrap_generic(data, scraper):
     """
     Function for scraping a concept from a Wikipast page. It does not rely on a particular page layout.
-    Instead, it looks for occurrences of the concept keyword (as defined by the scraper object) and extracts 
+    Instead, it looks for occurrences of the concept keyword (as defined by the scraper object) and extracts
     objects from the corresponding lines.
-    
+
     :param data: The source code from a wiki page.
     :param scraper: The Scraper class which parametrize how the actual object extraction is done.
     :return: A set of objects corresponding to the concept scraped.
@@ -48,7 +48,7 @@ class Scraper(metaclass=ABCMeta):
     @abstractmethod
     def keyword():
         """
-        :return: The keyword describing which concept to scrap 
+        :return: The keyword describing which concept to scrap
         """
         pass
 
@@ -78,10 +78,10 @@ class Scraper(metaclass=ABCMeta):
         Date / Location. Event X [for/from/of] Person Y.
 
         The line is first split at '/' to retrieve the date, then at the first dot to retrieve the location and
-        finally splits the remaining string at each space. The resulting list is filtered according to the list of 
+        finally splits the remaining string at each space. The resulting list is filtered according to the list of
         words to discard as given in the WikiStrings file and the event object is created with the remaining data.
         If the remaining data does not math the format expected it is discarded and the entry is logged.
-        
+
         :param s: The string entry from which to extract the event.
         :param stringsToDiscard: The constant list of string to discard from the event entry.
         :param eventName: The name of the event. (For logging purposes)
@@ -134,7 +134,7 @@ class Scraper(metaclass=ABCMeta):
         Date / Location. Event X [for/from/of] Person Y [with/and] Person Z.
 
         The line is first split at '/' to retrieve the date, then at the first dot to retrieve the location and
-        finally splits the remaining string at each space. The resulting list is filtered according to the list of 
+        finally splits the remaining string at each space. The resulting list is filtered according to the list of
         words to discard as given in the WikiStrings file and the event object is created with the remaining data.
         If the remaining data does not math the format expected it is discarded and the entry is logged.
 
@@ -259,6 +259,24 @@ class EncounterScraper(Scraper):
         tmp = Scraper.binaryEventExtractor(s, WikiStrings.ENCOUNTER_TODISCARD, WikiStrings.ENCOUNTER)
         return None if tmp is None else Encounter(*tmp)
 
+class ElectionScraper(Scraper):
+    """
+    A Scapper class psecialized in scrapping elections of individuals
+    """
+
+    @staticmethod
+    def keyword():
+        return WikiStrings.ELECTION
+
+    @staticmethod
+    def find(data):
+        return data.findAll(string=WikiStrings.ELECTION)
+
+    @staticmethod
+    def extract(s):
+        tmp = Scraper.unaryEventExtractor(s, WikiStrings.ELECTION_TODISCARD, WikiStrings.ELECTION)
+        return None if tmp is None else Election(*tmp)
+
 
 def processUrl(url, responses, i):
     tmp = None
@@ -298,8 +316,9 @@ def run(urlList):
         deaths = scrap_generic(soup, DeathScraper)
         encounters = scrap_generic(soup, EncounterScraper)
         positions = scrap_generic(soup, PositionScraper)
+        elections = scrap_generic(soup, ElectionScraper)
 
-        resData.addData(births, deaths, encounters, positions)
+        resData.addData(deaths, births, encounters, positions, elections)
 
     return resData
 
@@ -314,9 +333,11 @@ class WikiData:
         self.births = set()
         self.encounters = set()
         self.positions = set()
+        self.elections = set()
 
-    def addData(self, deaths, births, encounters, positions):
+    def addData(self, deaths, births, encounters, positions, elections):
         self.deaths = self.deaths | deaths
         self.births = self.births | births
         self.encounters = self.encounters | encounters
         self.positions = self.positions | positions
+        self.elections = self.elections | elections
