@@ -5,6 +5,7 @@ import urllib.request as urllib
 from bs4 import BeautifulSoup
 
 import Scraping.WikiScraper
+from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
@@ -13,7 +14,7 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 class ScrapingEngine(object):
     def __init__(self):
         self.linksDB = set()
-        self.objectsDB = set()
+        self.objectsDB = WikiData()
         self.baseUrl = 'http://wikipast.epfl.ch'
         self.listPage = '/wikipast/index.php/Sp%C3%A9cial:Toutes_les_pages'
 
@@ -34,9 +35,7 @@ class ScrapingEngine(object):
     def processUrlBatch(self, batch):
         logging.info("Attempting to scrape: %s", batch)
         results = Scraping.WikiScraper.run(batch)
-
-        for (births, deaths, encounters) in results:
-            self.objectsDB = self.objectsDB.union(births.union(deaths).union(encounters))
+        self.objectsDB.joinWith(results)
 
     def run(self, batchSize=10):
         start = time.time()
@@ -45,7 +44,7 @@ class ScrapingEngine(object):
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
 
-        self.buildLinkDatabase(soup)
+        self.buildLinkDatabase(soup, 100)
 
         urlBatch = list()
         i = 0
@@ -60,11 +59,7 @@ class ScrapingEngine(object):
         self.processUrlBatch(urlBatch)
 
         end = time.time()
-
-        for e in self.objectsDB:
-            if e is None:
-                continue
-            logging.info("%s", str(e))
+        logging.info("%s", str(self.objectsDB))
         logging.info("Processing time was %f second(s).", end - start)
 
 

@@ -5,6 +5,7 @@ import urllib.request as urllib
 from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
+from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
 from Scraping.WikiStrings import translationTable
 
@@ -326,18 +327,3 @@ def run(urlList):
 if __name__ == '__main__':
     run()
 
-
-class WikiData:
-    def __init__(self):
-        self.deaths = set()
-        self.births = set()
-        self.encounters = set()
-        self.positions = set()
-        self.elections = set()
-
-    def addData(self, deaths, births, encounters, positions, elections):
-        self.deaths = self.deaths | deaths
-        self.births = self.births | births
-        self.encounters = self.encounters | encounters
-        self.positions = self.positions | positions
-        self.elections = self.elections | elections
