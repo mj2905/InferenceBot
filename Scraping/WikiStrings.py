@@ -37,9 +37,9 @@ ELECTION_TODISCARD = 'Election de '
 POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
-ERROR_ENCOUNTER = "Erreur de rencontre"
 ERROR_BIRTH = "Plusieurs naissances"
 ERROR_DEATH = "Plusieurs morts"
+WARNING_ENCOUNTER = "Attention, erreur potentielle de rencontre"
 ERROR_ELECTION = "Erreur d'election"
 
 

@@ -29,9 +29,9 @@ position = WikiStrings.POSITION
 election = WikiStrings.ELECTION
 # close = WikiStrings.CLOSE
 far = WikiStrings.FAR
-error_encounter = WikiStrings.ERROR_ENCOUNTER
 error_multi_birth = WikiStrings.ERROR_BIRTH
 error_multi_death = WikiStrings.ERROR_DEATH
+warning_encounter = WikiStrings.WARNING_ENCOUNTER
 
 error_election = WikiStrings.ERROR_ELECTION
 
@@ -52,10 +52,10 @@ B_RULES = [BIRTH_MULTITIMES, DEATH_MULTITIMES, DEATH_BIRTH_RULES]
 ENCOUNTER_RULES = [
     [[Predicate([d1, l1, p1, p2], encounter), Predicate([d1, l2, p1], position),
       Predicate([l1, l2], far)],
-     Predicate([d1, l1, l2, p1, p2], error_encounter)],
+     Predicate([d1, l1, l2, p1, p2], warning_encounter)],
     [[Predicate([d1, l1, p1, p2], encounter), Predicate([d1, l2, p2], position),
       Predicate([l1, l2], far)],
-     Predicate([d1, l1, l2, p1, p2], error_encounter)]]
+     Predicate([d1, l1, l2, p1, p2], warning_encounter)]]
 
 # Rules
 ELECTION_RULES = [
