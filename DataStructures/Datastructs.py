@@ -22,9 +22,9 @@ class Predicateable(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def toPredicate(self):
+    def toPredicate(self, url):
+        self.url = url
         pass
-
 
 class Person(Atomiseable):
     """
@@ -169,7 +169,8 @@ class Event(Predicateable):
         return str(self.date)
 
     @abstractmethod
-    def toPredicate(self):
+    def toPredicate(self, url):
+        super(Event, self).toPredicate(url)
         pass
 
 
@@ -195,8 +196,8 @@ class LifeEvent(Event, metaclass=ABCMeta):
     def __eq__(self, other):
         return self.__key() == other.__key()
 
-    def toPredicate(self):
-        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], self.predicateName)
+    def toPredicate(self, url):
+        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], self.predicateName, {url})
 
 class SocialEvent(Event, metaclass=ABCMeta):
     def __init__(self, date, location, person1, person2, strName, predicateName=None):
@@ -221,9 +222,9 @@ class SocialEvent(Event, metaclass=ABCMeta):
     def __eq__(self, other):
         return self.__key() == other.__key()
 
-    def toPredicate(self):
+    def toPredicate(self, url):
         return Predicate([self.date.toAtom(), self.location.toAtom(), self.person1.toAtom(), self.person2.toAtom()],
-                         self.predicateName)
+                         self.predicateName, {url})
 
 
 class Birth(LifeEvent):
@@ -239,6 +240,7 @@ class Death(LifeEvent):
 class Position(LifeEvent):
     def __init__(self, date, location, person):
         super(Position, self).__init__(date, location, person, "Position")
+
 
 class Election(LifeEvent):
     def __init__(self, date, location, person):
@@ -287,21 +289,32 @@ if __name__ == '__main__':
 
 class WikiData:
     def __init__(self):
+        self.data = set()
+
+    def joinWith(self, that):
+        self.data |= that
+
+    def add(self, elem):
+        self.data.add(elem)
+
+
+class WikiPage:
+    def __init__(self, url):
         self.deaths = set()
         self.births = set()
         self.encounters = set()
         self.positions = set()
         self.elections = set()
+        self.weddings = set()
+        self.url = url
 
-    def addData(self, deaths, births, encounters, positions, elections):
-        self.deaths = self.deaths | deaths
-        self.births = self.births | births
-        self.encounters = self.encounters | encounters
-        self.positions = self.positions | positions
-        self.elections = self.elections | elections
-
-    def joinWith(self, that):
-        self.addData(that.deaths, that.births, that.encounters, that.positions, that.elections)
+    def addData(self, deaths, births, encounters, positions, elections, weddings):
+        self.deaths |= deaths
+        self.births |= births
+        self.encounters |= encounters
+        self.positions |= positions
+        self.elections |= elections
+        self.weddings |= weddings
 
     def __str__(self):
         resStr = []
@@ -316,5 +329,7 @@ class WikiData:
             resStr.append(str(positions))
         for elections in self.elections:
             resStr.append(str(elections))
+        for wedding in self.weddings:
+            resStr.append(str(wedding))
 
         return '\n'.join(resStr)

@@ -39,16 +39,22 @@ class BirthInferenceChecker(InferenceChecker):
     def checkIfErrors(self):
 
         # Insert the url to check from
-        wikiData = \
+        resData = \
             WikiScraper.run(
                 ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
-        births = list(wikiData.births)
-        deaths = list(wikiData.deaths)
+        birthsFacts = []
+        deathFacts = []
 
-        birthsFacts = list(map(lambda x: x.toPredicate(), births))
-        deathFacts = list(map(lambda x: x.toPredicate(), deaths))
+        births = []
+        deaths = []
+
+        for page in resData.data:
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
+            births.extend(list(page.births))
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
+            deaths.extend(list(page.deaths))
 
         self.addFacts(birthsFacts)
         self.addFacts(deathFacts)
@@ -79,11 +85,17 @@ class EncounterInferenceChecker(InferenceChecker):
             WikiScraper.run(
                 ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
 
-        encounters = resData.encounters
-        positions = resData.positions
+        encountersFacts = []
+        positionsFacts = []
 
-        encountersFacts = list(map(lambda x: x.toPredicate(), encounters))
-        positionsFacts = list(map(lambda x: x.toPredicate(), positions))
+        encounters = set()
+        positions = set()
+
+        for page in resData.data:
+            encountersFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.encounters)))
+            encounters |= page.encounters
+            positionsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.positions)))
+            positions |= page.positions
 
         self.addFacts(encountersFacts)
         self.addFacts(positionsFacts)
@@ -110,13 +122,21 @@ class ElectionInferenceChecker(InferenceChecker):
             WikiScraper.run(
                 ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
 
-        births = resData.births
-        deaths = resData.deaths
-        elections = resData.elections
+        electionsFacts = []
+        birthsFacts = []
+        deathFacts = []
 
-        electionsFacts = list(map(lambda x: x.toPredicate(), elections))
-        birthsFacts = list(map(lambda x: x.toPredicate(), births))
-        deathFacts = list(map(lambda x: x.toPredicate(), deaths))
+        elections = set()
+        births = set()
+        deaths = set()
+
+        for page in resData.data:
+            electionsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.elections)))
+            elections |= page.elections
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
+            births |= page.births
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
+            deaths |= page.deaths
 
         self.addFacts(electionsFacts)
         self.addFacts(birthsFacts)
@@ -141,13 +161,21 @@ class MariageInferenceChecker(InferenceChecker):
                 ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
-        births = resData.births
-        deaths = resData.deaths
-        mariages = resData.mariages
+        mariagesFacts = []
+        birthsFacts = []
+        deathFacts = []
 
-        mariagesFacts = list(map(lambda x: x.toPredicate(), mariages))
-        birthsFacts = list(map(lambda x: x.toPredicate(), births))
-        deathFacts = list(map(lambda x: x.toPredicate(), deaths))
+        mariages = []
+        births = []
+        deaths = []
+
+        for page in resData.data:
+            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.weddings)))
+            mariages.extend(page.elections)
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
+            births.extend(page.births)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
+            deaths.extend(page.deaths)
 
         self.addFacts(mariagesFacts)
         self.addFacts(birthsFacts)

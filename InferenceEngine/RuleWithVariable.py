@@ -1,3 +1,6 @@
+from InferenceEngine.Unificator import Unificator
+
+
 class RuleWithVariable:
     """ Représentation d'une règle d'inférence pour le chaînage avec\
         variables.
@@ -16,7 +19,7 @@ class RuleWithVariable:
         self.conditions = conditions
         self.conclusion = conclusion
 
-    def dependsOf(self, fact, method):
+    def dependsOf(self, fact, method=Unificator()):
         """ Vérifie qu'un fait fait partie, sous réserve de substitution,\
             des conditions de la règle.
             
@@ -56,6 +59,7 @@ class RuleWithVariable:
             ne peut être satisfaite.
         """
         envs = [env]
+        factsSati = set()
 
         # On n'a pas besoin de tester ``cond`` car cela a été fait dans l'appel
         # à ``depend_de`` qui précède l'appel à cette méthode.
@@ -64,21 +68,23 @@ class RuleWithVariable:
         # Pour chaque condition dans la liste des conditions, si la liste
         # des environnements n'est pas vide, on y ajoute les environnements
         # qui permettent de satisfaire une des conditions.
-        for cond1 in conditions_a_tester:
+        for cond1 in self.conditions:
             envs_nouveaux = []
             for fact in facts:
                 for env1 in envs:
                     env1 = method.pattern_match(fact, cond1, env1)
                     if env1 != method.failure:
                         envs_nouveaux.append(env1)
+                        if self.dependsOf(fact):
+                            factsSati |= fact.urls
 
             # Si au moins une condition n'est pas satisfaite, la règle ne l'est pas non plus.
             if len(envs_nouveaux) == 0:
-                return []
+                return [], set()
 
             envs = envs_nouveaux
 
-        return envs
+        return envs, factsSati
 
     def __repr__(self):
         """ Représentation d'une règle sous forme de string. """

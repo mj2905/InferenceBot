@@ -324,7 +324,9 @@ def run(urlList):
     for process in processes:
         process.join()
 
-    for response in responses:
+    for i in range(len(responses)):
+        response = responses.__getitem__(i)
+
         if response is None:
             continue
 
@@ -337,27 +339,12 @@ def run(urlList):
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
 
-        resData.addData(deaths, births, encounters, positions, elections, mariages)
+        wikiPage = WikiPage(urlList.__getitem__(i))
+        wikiPage.addData(deaths, births, encounters, positions, elections, mariages)
+        resData.add(wikiPage)
 
     return resData
 
 
 if __name__ == '__main__':
     run()
-
-class WikiData:
-    def __init__(self):
-        self.deaths = set()
-        self.births = set()
-        self.encounters = set()
-        self.positions = set()
-        self.elections = set()
-        self.mariages = set()
-
-    def addData(self, deaths, births, encounters, positions, elections, mariages):
-        self.deaths = self.deaths | deaths
-        self.births = self.births | births
-        self.encounters = self.encounters | encounters
-        self.positions = self.positions | positions
-        self.elections = self.elections | elections
-        self.mariages = self.mariages | mariages

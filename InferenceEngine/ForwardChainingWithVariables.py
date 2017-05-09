@@ -50,12 +50,15 @@ class ForwardChainingWithVariables(Chaining):
                         # Remplace l'environnement par ceux qui satisfont
                         # toutes les conditions de la règle et pas seulement la 
                         # première condition.
-                        envs = rule.satisfiedBy(self.solutions, cond, env, self.method)
+                        envs, factsSati = rule.satisfiedBy(self.solutions, cond, env, self.method)
 
                         # Ajoute la conclusion de la règle instanciée pour tous 
                         # les environnements possibles.
                         if len(envs) > 0:
-                            queue.extend(self.instanciateConclusion(rule, envs))
+                            pr = self.instanciateConclusion(rule, envs).copy()
+                            for p in pr:
+                                p.addUrls(factsSati)
+                            queue.extend(pr)
                             self.trace.append(rule)
 
         return self.solutions

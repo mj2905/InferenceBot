@@ -5,6 +5,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Proposition(metaclass=ABCMeta):
+
     @abstractmethod
     def atom(self):
         pass
@@ -39,9 +40,13 @@ class Proposition(metaclass=ABCMeta):
 
 
 class Atom(Proposition):
-    def __init__(self, name, isVariable):
+    def addUrls(self, urls):
+        self.urls |= urls
+
+    def __init__(self, name, isVariable, urls=set()):
         self.name = name
         self.isVariable = isVariable
+        self.urls = urls
 
     def atom(self):
         return self
@@ -72,9 +77,13 @@ class Atom(Proposition):
 
 
 class Predicate(Proposition):
-    def __init__(self, propositions, name=''):
+    def __init__(self, propositions, name='', urls=set()):
         self.propositions = propositions
         self.name = name
+        self.urls = urls
+
+    def addUrls(self, urls):
+        self.urls |= urls
 
     def atom(self):
         if self.getIsAtomic():

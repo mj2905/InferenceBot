@@ -23,7 +23,7 @@ class Unificator:
             else:
                 return pattern
 
-        pattern_subst = Predicate([], pattern.name)
+        pattern_subst = Predicate([], pattern.name, set())
 
         for sub_pattern in pattern.propositions:
             sub_pattern_subst = self.substitute(sub_pattern, env)

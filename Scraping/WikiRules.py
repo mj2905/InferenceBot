@@ -19,6 +19,7 @@ l5 = Atom('l5', True)
 # Person Variables
 p1 = Atom('p1', True)
 p2 = Atom('p2', True)
+p3 = Atom('p3', True)
 
 # Name of Predicate
 before = WikiStrings.BEFORE
@@ -37,6 +38,10 @@ far = WikiStrings.FAR
 error_multi_birth = WikiStrings.ERROR_BIRTH
 error_multi_death = WikiStrings.ERROR_DEATH
 warning_encounter = WikiStrings.WARNING_ENCOUNTER
+
+father = WikiStrings.father
+grandfather = WikiStrings.grandfather
+son = WikiStrings.son
 
 error_election = WikiStrings.ERROR_ELECTION
 error_mariage = WikiStrings.ERROR_MARIAGE
@@ -65,12 +70,21 @@ ENCOUNTER_RULES = [
 # Rules
 ELECTION_RULES = [
     [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p1], election),
-    Predicate([d3, d1], before)],
+      Predicate([d3, d2], before), Predicate([d3, d1], before)],
     Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)],
     [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p1], election),
-    Predicate([d2, d3], before)],
+      Predicate([d1, d3], before), Predicate([d2, d3], before)],
+     Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)],
+    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p1], election),
+      Predicate([d3, d1], before), Predicate([d2, d3], before)],
     Predicate([d1, d2, d3, l1, l2, l3, p1], error_election)]
 ]
+
+GRANDFATHER_RULES = [
+    [[Predicate([p1, p2], son)], Predicate([p2, p1], father)],
+    [[Predicate([p1, p2], father), Predicate([p2, p3], father)], Predicate([p1, p3], grandfather)]
+]
+
 # Rules
 MARIAGE_RULES = [
     #dates for only one person available

@@ -39,6 +39,10 @@ MARIAGE_TODISCARD = ["Mariage", "de", "avec", "entre", "et"]
 
 POSITION = "Position"
 
+father = "père"
+grandfather = "grand-père"
+son = "fils"
+
 ERROR_DATE = "Erreur de date"
 ERROR_BIRTH = "Plusieurs naissances"
 ERROR_DEATH = "Plusieurs morts"
