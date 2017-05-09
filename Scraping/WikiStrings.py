@@ -12,14 +12,15 @@ Example:
 dateTranslationTable = {ord(c): None for c in '-'}
 translationTable = {ord(c): None for c in '0123456789|[](){}.,:;/*%&?!^='}
 
-BIRTH = "Naissance"
-DEATH = "Mort"
 
 BEFORE = "avant"
 AFTER = "apres"
 
+BIRTH = "Naissance"
 BIRTH_TODISCARD = 'Naissance de '
-DEATH_TODISCARD = 'Mort de '
+
+DEATH = "Décès"
+DEATH_TODISCARD = ["Mort", "Décès", "de"]
 POSITION_TODISCARD = '\w+ de '
 
 CLOSE = "proche"
