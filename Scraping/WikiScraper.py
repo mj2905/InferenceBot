@@ -5,10 +5,9 @@ import urllib.request as urllib
 from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
+from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
 from Scraping.WikiStrings import translationTable
-
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 
 def scrap_generic(data, scraper):
@@ -345,7 +344,6 @@ def run(urlList):
 
 if __name__ == '__main__':
     run()
-
 
 class WikiData:
     def __init__(self):

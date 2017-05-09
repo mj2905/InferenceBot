@@ -17,6 +17,8 @@ DEATH = "Mort"
 
 BEFORE = "avant"
 AFTER = "apres"
+DIFFERENT = "different"
+SAME = "same"
 
 BIRTH_TODISCARD = 'Naissance de '
 DEATH_TODISCARD = 'Mort de '
@@ -38,15 +40,15 @@ MARIAGE_TODISCARD = ["Mariage", "de", "avec", "entre", "et"]
 POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
-ERROR_ENCOUNTER = "Erreur de rencontre"
+ERROR_BIRTH = "Plusieurs naissances"
+ERROR_DEATH = "Plusieurs morts"
+WARNING_ENCOUNTER = "Attention, erreur potentielle de rencontre"
 ERROR_ELECTION = "Erreur d'election"
 ERROR_MARIAGE = "Erreur de mariage"
 
 
 def validWikiUrl(url):
     if url in ["#", None]:
-        return False
-    if url.startswith("http") or url.startswith("www") or url.startswith("/www"):
         return False
     if -1 != url.find("Wikipast:"):
         return False

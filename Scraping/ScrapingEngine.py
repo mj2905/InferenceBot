@@ -1,10 +1,13 @@
 import logging
+import re
 import time
 import urllib.request as urllib
 
+import requests
 from bs4 import BeautifulSoup
 
 import Scraping.WikiScraper
+from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
@@ -13,20 +16,39 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 class ScrapingEngine(object):
     def __init__(self):
         self.linksDB = set()
-        self.objectsDB = set()
+        self.objectsDB = WikiData()
         self.baseUrl = 'http://wikipast.epfl.ch'
+        self.urlTitlePrefix = self.baseUrl + '/wikipast/index.php/'
         self.listPage = '/wikipast/index.php/Sp%C3%A9cial:Toutes_les_pages'
 
     def buildLinkDatabase(self, data, limit=-1):
         logging.info("Building link database")
-        i = 0
-        for link in data.find_all('a'):
-            if (limit != -1 and i > limit):
-                break;
-            else:
-                logging.debug("Added link to database: %s", link.get("href"))
-                self.linksDB.add(link.get("href"))
-                i += 1
+        baseurl = 'http://wikipast.epfl.ch/wikipast/'
+
+        protected_logins = ["Frederickaplan", "Maud", "Vbuntinx", "Testbot", "IB", "SourceBot", "PageUpdaterBot",
+                            "Orthobot", "BioPathBot", "ChronoBOT", "Amonbaro", "AntoineL", "AntoniasBanderos", "Arnau",
+                            "Arnaudpannatier", "Aureliver", "Brunowicht", "Burgerpop", "Cedricviaccoz", "Christophe",
+                            "Claudioloureiro", "Ghislain", "Gregoire3245", "Hirtg", "Houssm", "Icebaker", "JenniCin",
+                            "JiggyQ", "JulienB", "Kl", "Kperrard", "Leandro Kieliger", "Marcus", "Martin",
+                            "MatteoGiorla",
+                            "Mireille", "Mj2905", "Musluoglucem", "Nacho", "Nameless", "Nawel", "O'showa", "PA",
+                            "Qantik",
+                            "QuentinB", "Raphael.barman", "Roblan11", "Romain Fournier", "Sbaaa", "Snus", "Sonia",
+                            "Tboyer",
+                            "Thierry", "Titi", "Vlaedr", "Wanda"]
+        depuis_date = '2017-05-02T16:00:00Z'
+
+        for user in protected_logins:
+            result = requests.post(
+                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&ucend=' + depuis_date)
+            soup = BeautifulSoup(result.content, 'lxml')
+
+            for primitive in soup.usercontribs.findAll('item'):
+                self.linksDB.add(''.join([self.urlTitlePrefix, re.sub('\s+', '_', str(primitive['title']))]))
+                print(primitive['title'])
+
+        for link in self.linksDB:
+            logging.info("%s", link)
 
         # Validate links
         self.linksDB = [x for x in self.linksDB if validWikiUrl(x)]
@@ -34,9 +56,7 @@ class ScrapingEngine(object):
     def processUrlBatch(self, batch):
         logging.info("Attempting to scrape: %s", batch)
         results = Scraping.WikiScraper.run(batch)
-
-        for (births, deaths, encounters) in results:
-            self.objectsDB = self.objectsDB.union(births.union(deaths).union(encounters))
+        self.objectsDB.joinWith(results)
 
     def run(self, batchSize=10):
         start = time.time()
@@ -50,7 +70,7 @@ class ScrapingEngine(object):
         urlBatch = list()
         i = 0
         for l in self.linksDB:
-            urlBatch.append(''.join([self.baseUrl, l]))
+            urlBatch.append(l)
             i += 1
 
             if (i >= batchSize):
@@ -60,11 +80,7 @@ class ScrapingEngine(object):
         self.processUrlBatch(urlBatch)
 
         end = time.time()
-
-        for e in self.objectsDB:
-            if e is None:
-                continue
-            logging.info("%s", str(e))
+        logging.info("%s", str(self.objectsDB))
         logging.info("Processing time was %f second(s).", end - start)
 
 

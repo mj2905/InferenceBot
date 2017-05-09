@@ -134,12 +134,23 @@ class Date(Atomiseable):
     def isBefore(self, other):
         return (self.year, self.month, self.day) < (other.year, other.month, other.day)
 
+    def isDifferent(self, other):
+        return (self.year, self.month, self.day) != (other.year, other.month, other.day)
+
     def isBeforePredicate(self, other):
         before = "avant"
         if self.isBefore(other):
             return Predicate([self.toAtom(), other.toAtom()], before)
         else:
             return Predicate([other.toAtom(), self.toAtom()], before)
+
+    def isDifferentPredicate(self, other):
+        different = "different"
+        same = "same"
+        if self.isDifferent(other):
+            return Predicate([self.toAtom(), other.toAtom()], different)
+        else:
+            return Predicate([self.toAtom(), other.toAtom()], same)
 
 
 class Event(Predicateable):
@@ -272,3 +283,38 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+class WikiData:
+    def __init__(self):
+        self.deaths = set()
+        self.births = set()
+        self.encounters = set()
+        self.positions = set()
+        self.elections = set()
+
+    def addData(self, deaths, births, encounters, positions, elections):
+        self.deaths = self.deaths | deaths
+        self.births = self.births | births
+        self.encounters = self.encounters | encounters
+        self.positions = self.positions | positions
+        self.elections = self.elections | elections
+
+    def joinWith(self, that):
+        self.addData(that.deaths, that.births, that.encounters, that.positions, that.elections)
+
+    def __str__(self):
+        resStr = []
+
+        for death in self.deaths:
+            resStr.append(str(death))
+        for births in self.births:
+            resStr.append(str(births))
+        for encounters in self.encounters:
+            resStr.append(str(encounters))
+        for positions in self.positions:
+            resStr.append(str(positions))
+        for elections in self.elections:
+            resStr.append(str(elections))
+
+        return '\n'.join(resStr)

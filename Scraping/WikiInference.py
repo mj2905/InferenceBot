@@ -6,6 +6,7 @@ from InferenceEngine.RuleWithVariable import RuleWithVariable
 from InferenceEngine.Unificator import Unificator
 from Scraping import WikiRules
 from Scraping import WikiScraper
+from Scraping.WikiRules import B_RULES
 
 
 class InferenceChecker(metaclass=ABCMeta):
@@ -33,7 +34,7 @@ class InferenceChecker(metaclass=ABCMeta):
 
 class BirthInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
-        super().__init__(WikiRules.DEATH_BIRTH_RULES, facts)
+        super().__init__(B_RULES, facts)
 
     def checkIfErrors(self):
 
@@ -43,8 +44,8 @@ class BirthInferenceChecker(InferenceChecker):
                 ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
-        births = wikiData.births
-        deaths = wikiData.deaths
+        births = list(wikiData.births)
+        deaths = list(wikiData.deaths)
 
         birthsFacts = list(map(lambda x: x.toPredicate(), births))
         deathFacts = list(map(lambda x: x.toPredicate(), deaths))
@@ -55,6 +56,14 @@ class BirthInferenceChecker(InferenceChecker):
         for d in deaths:
             for b in births:
                 self.addFact(d.date.isBeforePredicate(b.date))
+
+        for i in range(0, len(births)):
+            for j in range(i, len(births)):
+                self.addFact(births[i].date.isDifferentPredicate(births[j].date))
+
+        for i in range(0, len(deaths)):
+            for j in range(i, len(deaths)):
+                self.addFact(deaths[i].date.isDifferentPredicate(deaths[j].date))
 
         return self.moteur.chain()
 
@@ -90,6 +99,7 @@ class EncounterInferenceChecker(InferenceChecker):
 
         return self.moteur.chain()
 
+
 class ElectionInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(WikiRules.ELECTION_RULES, facts)
@@ -111,7 +121,6 @@ class ElectionInferenceChecker(InferenceChecker):
         self.addFacts(electionsFacts)
         self.addFacts(birthsFacts)
         self.addFacts(deathFacts)
-
 
         for e in elections:
             for d in deaths:
@@ -157,5 +166,5 @@ class MariageInferenceChecker(InferenceChecker):
 
 
 if __name__ == '__main__':
-    t = BirthInferenceChecker()
+    t = EncounterInferenceChecker()
     print(t.checkIfErrors())

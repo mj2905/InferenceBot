@@ -22,6 +22,8 @@ p2 = Atom('p2', True)
 
 # Name of Predicate
 before = WikiStrings.BEFORE
+different = WikiStrings.DIFFERENT
+#  after = WikiStrings.AFTER
 after = WikiStrings.AFTER
 birth = WikiStrings.BIRTH
 death = WikiStrings.DEATH
@@ -32,25 +34,33 @@ election = WikiStrings.ELECTION
 mariage = WikiStrings.MARIAGE
 # close = WikiStrings.CLOSE
 far = WikiStrings.FAR
-error_encounter = WikiStrings.ERROR_ENCOUNTER
+error_multi_birth = WikiStrings.ERROR_BIRTH
+error_multi_death = WikiStrings.ERROR_DEATH
+warning_encounter = WikiStrings.WARNING_ENCOUNTER
 
 error_election = WikiStrings.ERROR_ELECTION
 error_mariage = WikiStrings.ERROR_MARIAGE
 # Rules
-DEATH_BIRTH_RULES = [
+
+BIRTH_MULTITIMES = [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], birth), Predicate([d1, d2], different)], Predicate([p1, d1, d2], error_multi_birth)]
+DEATH_MULTITIMES = [[Predicate([d1, l1, p1], death), Predicate([d2, l2, p1], death), Predicate([d1, d2], different)], Predicate([p1, d1, d2], error_multi_death)]
+
+DEATH_BIRTH_RULES = [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d2, d1], before)],
+     Predicate([p1, d1, d2], error_date)]
     # [[Predicate([y, x], before)], Predicate([x, y], after)],
     #  [[Predicate([y, x], after)], Predicate([x, y], before)],
-    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d2, d1], before)],
-     Predicate([p1, d1, d2], error_date)]]
+
+
+B_RULES = [BIRTH_MULTITIMES, DEATH_MULTITIMES, DEATH_BIRTH_RULES]
 
 # Rules
 ENCOUNTER_RULES = [
     [[Predicate([d1, l1, p1, p2], encounter), Predicate([d1, l2, p1], position),
       Predicate([l1, l2], far)],
-     Predicate([d1, l1, l2, p1, p2], error_encounter)],
+     Predicate([d1, l1, l2, p1, p2], warning_encounter)],
     [[Predicate([d1, l1, p1, p2], encounter), Predicate([d1, l2, p2], position),
       Predicate([l1, l2], far)],
-     Predicate([d1, l1, l2, p1, p2], error_encounter)]]
+     Predicate([d1, l1, l2, p1, p2], warning_encounter)]]
 
 # Rules
 ELECTION_RULES = [
