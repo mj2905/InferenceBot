@@ -37,14 +37,16 @@ error_election = WikiStrings.ERROR_ELECTION
 
 # Rules
 
-BIRTH_MULTITIMES = [[[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], birth)], Predicate([d1, d2], different), Predicate([p1, d1, d2], error_multi_birth)]]
-DEATH_MULTITIMES = [[[Predicate([d1, l1, p1], death), Predicate([d2, l2, p1], death)], Predicate([d1, d2], different), Predicate([p1, d1, d2], error_multi_death)]]
+BIRTH_MULTITIMES = [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], birth), Predicate([d1, d2], different)], Predicate([p1, d1, d2], error_multi_birth)]
+DEATH_MULTITIMES = [[Predicate([d1, l1, p1], death), Predicate([d2, l2, p1], death), Predicate([d1, d2], different)], Predicate([p1, d1, d2], error_multi_death)]
 
-DEATH_BIRTH_RULES = [
+DEATH_BIRTH_RULES = [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d2, d1], before)],
+     Predicate([p1, d1, d2], error_date)]
     # [[Predicate([y, x], before)], Predicate([x, y], after)],
     #  [[Predicate([y, x], after)], Predicate([x, y], before)],
-    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d2, d1], before)],
-     Predicate([p1, d1, d2], error_date)]]
+
+
+B_RULES = [BIRTH_MULTITIMES, DEATH_MULTITIMES, DEATH_BIRTH_RULES]
 
 # Rules
 ENCOUNTER_RULES = [

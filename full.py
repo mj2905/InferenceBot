@@ -1,6 +1,6 @@
 from Scraping.WikiInference import BirthInferenceChecker, EncounterInferenceChecker, ElectionInferenceChecker
 from Editing.WikiWriter import *
-from Scraping.WikiStrings import ERROR_DATE, ERROR_ENCOUNTER, ERROR_BIRTH, ERROR_DEATH
+from Scraping.WikiStrings import ERROR_DATE, ERROR_ENCOUNTER, ERROR_BIRTH, ERROR_DEATH, ERROR_ELECTION
 
 def write_birth_check():
 
@@ -45,7 +45,7 @@ def pretty(list):
         elif (ERROR_DEATH in elem.name):
             newList.append(elem.name + " : [[" + elem.propositions[0].name + "]] mort en " + elem.propositions[
                 1].name + " et mort en " + elem.propositions[2].name)
-        elif("Erreur d'election" in elem.name):
+        elif(ERROR_ELECTION in elem.name):
             newList.append(elem.name + " : [[" + elem.propositions[6].name + "]] (" + elem.propositions[0].name + " / " + elem.propositions[1].name + ")"+ " est élu en " + elem.propositions[2].name + " à [[" + elem.propositions[5].name + "]]")
     return newList
 
