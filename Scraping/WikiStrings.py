@@ -15,6 +15,8 @@ translationTable = {ord(c): None for c in '0123456789|[](){}.,:;/*%&?!^='}
 
 BEFORE = "avant"
 AFTER = "apres"
+DIFFERENT = "different"
+SAME = "same"
 
 BIRTH = "Naissance"
 BIRTH_TODISCARD = 'Naissance de '
@@ -36,7 +38,9 @@ ELECTION_TODISCARD = 'Election de '
 POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
-ERROR_ENCOUNTER = "Erreur de rencontre"
+ERROR_BIRTH = "Plusieurs naissances"
+ERROR_DEATH = "Plusieurs morts"
+WARNING_ENCOUNTER = "Attention, erreur potentielle de rencontre"
 ERROR_ELECTION = "Erreur d'election"
 
 
