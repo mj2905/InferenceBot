@@ -14,7 +14,7 @@ def write_birth_check():
     list_birth_facts = birth_facts.checkIfErrors()
     list_encounter_facts = encounter_facts.checkIfErrors()
     list_election_facts = election_facts.checkIfErrors()
-    # list_mariage_facts = mariage_facts.checkIfErrors()
+    list_mariage_facts = mariage_facts.checkIfErrors()
 
     list_facts = []
     if list_birth_facts is not None:

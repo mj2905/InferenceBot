@@ -5,7 +5,6 @@ from abc import ABCMeta, abstractmethod
 
 
 class Proposition(metaclass=ABCMeta):
-
     @abstractmethod
     def atom(self):
         pass

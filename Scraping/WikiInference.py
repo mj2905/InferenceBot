@@ -83,7 +83,9 @@ class EncounterInferenceChecker(InferenceChecker):
         # Insert the url to check from
         resData = \
             WikiScraper.run(
-                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
+                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Pompilius_Iuvenalis',
+                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Varius_Maxentius'])
 
         encountersFacts = []
         positionsFacts = []
@@ -171,7 +173,7 @@ class MariageInferenceChecker(InferenceChecker):
 
         for page in resData.data:
             mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.weddings)))
-            mariages.extend(page.elections)
+            mariages.extend(page.weddings)
             birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
             births.extend(page.births)
             deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))

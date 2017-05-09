@@ -59,7 +59,6 @@ class RuleWithVariable:
             ne peut être satisfaite.
         """
         envs = [env]
-        factsSati = set()
 
         # On n'a pas besoin de tester ``cond`` car cela a été fait dans l'appel
         # à ``depend_de`` qui précède l'appel à cette méthode.
@@ -68,19 +67,30 @@ class RuleWithVariable:
         # Pour chaque condition dans la liste des conditions, si la liste
         # des environnements n'est pas vide, on y ajoute les environnements
         # qui permettent de satisfaire une des conditions.
+
+        factsSati = {}
         for cond1 in self.conditions:
             envs_nouveaux = []
             for fact in facts:
                 for env1 in envs:
-                    env1 = method.pattern_match(fact, cond1, env1)
-                    if env1 != method.failure:
-                        envs_nouveaux.append(env1)
-                        if self.dependsOf(fact):
-                            factsSati |= fact.urls
+                    env2 = method.pattern_match(fact, cond1, env1)
+                    if env2 != method.failure:
+                        envs_nouveaux.append(env2)
+                        if len(fact.urls) > 0:
+                            key1 = frozenset(env1.items())
+                            key2 = frozenset(env2.items())
+
+                            if key1 in factsSati.keys():
+                                factsSati[key2] = factsSati[key1]
+
+                            if key2 in factsSati.keys():
+                                factsSati[key2].extend(list(fact.urls))
+                            else:
+                                factsSati[key2] = list(fact.urls)
 
             # Si au moins une condition n'est pas satisfaite, la règle ne l'est pas non plus.
             if len(envs_nouveaux) == 0:
-                return [], set()
+                return []
 
             envs = envs_nouveaux
 
