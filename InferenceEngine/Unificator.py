@@ -85,7 +85,7 @@ class Unificator:
         reste_env = self.unify(prop1_tail, prop2_tail)
         if reste_env == Unificator.failure:
             return Unificator.failure
-        print()
+        #print()
         head_env.update(reste_env)
         return head_env
 

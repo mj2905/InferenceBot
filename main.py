@@ -30,7 +30,6 @@ def write_birth_check():
     tail = [head] + tail
 
     s = '\n* '.join(tail)
-    print(s)
     write_on_page(s)
 
 
