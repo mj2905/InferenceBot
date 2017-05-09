@@ -35,7 +35,7 @@ ELECTION_TODISCARD = 'Election de '
 POSITION = "Position"
 
 ERROR_DATE = "Erreur de date"
-ERROR_ENCOUNTER = "Erreur de rencontre"
+WARNING_ENCOUNTER = "Attention rencontre"
 ERROR_ELECTION = "Erreur d'election"
 
 

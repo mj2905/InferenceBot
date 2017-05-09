@@ -89,6 +89,7 @@ class EncounterInferenceChecker(InferenceChecker):
 
         return self.moteur.chain()
 
+
 class ElectionInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(WikiRules.ELECTION_RULES, facts)
@@ -111,7 +112,6 @@ class ElectionInferenceChecker(InferenceChecker):
         self.addFacts(birthsFacts)
         self.addFacts(deathFacts)
 
-
         for e in elections:
             for d in deaths:
                 self.addFact(d.date.isBeforePredicate(e.date))
@@ -122,5 +122,5 @@ class ElectionInferenceChecker(InferenceChecker):
 
 
 if __name__ == '__main__':
-    t = BirthInferenceChecker()
+    t = EncounterInferenceChecker()
     print(t.checkIfErrors())

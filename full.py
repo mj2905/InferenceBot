@@ -1,5 +1,6 @@
-from Scraping.WikiInference import BirthInferenceChecker, EncounterInferenceChecker, ElectionInferenceChecker
 from Editing.WikiWriter import *
+from Scraping.WikiInference import BirthInferenceChecker, EncounterInferenceChecker, ElectionInferenceChecker
+
 
 def write_birth_check():
 
@@ -22,6 +23,7 @@ def write_birth_check():
         list.extend(listElic)
 
 
+
     listFiltered = pretty(list)
 
     head, *tail = listFiltered
@@ -38,7 +40,7 @@ def pretty(list):
     for elem in list:
         if("Erreur de date" in elem.name):
             newList.append(elem.name + " : [[" + elem.propositions[0].name + "]] né en " + elem.propositions[1].name + " et mort en " + elem.propositions[2].name)
-        elif("Erreur de rencontre" in elem.name):
+        elif ("Attention rencontre" in elem.name):
             newList.append(elem.name + " : [[" + elem.propositions[3].name + "]] et [[" + elem.propositions[4].name + "]] se sont rencontrés à [[" + elem.propositions[1].name + "]] et à [[" + elem.propositions[2].name + "]] en même temps à la date " + elem.propositions[0].name)
         elif("Erreur d'election" in elem.name):
             newList.append(elem.name + " : [[" + elem.propositions[6].name + "]] (" + elem.propositions[0].name + " / " + elem.propositions[1].name + ")"+ " est élu en " + elem.propositions[2].name + " à [[" + elem.propositions[5].name + "]]")
