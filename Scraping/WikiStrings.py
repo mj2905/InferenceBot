@@ -49,7 +49,7 @@ ERROR_DEATH = "Plusieurs morts"
 WARNING_ENCOUNTER = "Attention, erreur potentielle de rencontre"
 ERROR_ELECTION = "Erreur d'election"
 ERROR_MARIAGE = "Erreur de mariage"
-
+DIVORCE_INFERENCE = "Divorce possible"
 
 def validWikiUrl(url):
     if url in ["#", None]:

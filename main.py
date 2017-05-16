@@ -10,13 +10,14 @@ def write_inferences(resData):
     encounter_facts = EncounterInferenceChecker()
     election_facts = ElectionInferenceChecker()
     mariage_facts = MariageInferenceChecker()
-
+    divorce_facts = DivorceInferenceChecker()
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
     list_encounter_facts = encounter_facts.checkIfErrors(resData)
     list_election_facts = election_facts.checkIfErrors(resData)
     list_mariage_facts = mariage_facts.checkIfErrors(resData)
-
+    list_divorce_facts = divorce_facts.checkIfErrors(resData)
+    
     list_facts = []
     if list_birth_facts is not None:
         list_facts.extend(list_birth_facts)
@@ -24,6 +25,8 @@ def write_inferences(resData):
         list_facts.extend(list_encounter_facts)
     if list_election_facts is not None:
         list_facts.extend(list_election_facts)
+    if list_divorce_facts is not None:
+        list_facts.extend(list_divorce_facts)
         #  if list_mariage_facts is not None:
         #     list_facts.extend(list_mariage_facts)
 
@@ -61,6 +64,9 @@ def pretty(list_facts):
             list_pretty.append(elem.name + " : [[" + elem.propositions[6].name + " ]] (" + elem.propositions[0].name
                 + " / " + elem.propositions[1].name + ") et " + elem.propositions[7].name + " se marient le "
                 + elem.propositions[2].name + " à [[" + elem.propositions[5].name + "]]")
+        elif DIVORCE_INFERENCE in elem.name:
+            list_pretty.append(elem.name + " : [[" + elem.propositions[4].name + "]] et [[" + elem.propositions[5].name + "]] ont probablement divorcé car [[" + elem.propositions[4] + 
+            "]] s'est remarié avec [[" + elem.propositions[6]+ "]]")
     return list_pretty
 
 def main():
