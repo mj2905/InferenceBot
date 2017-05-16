@@ -30,8 +30,20 @@ class KnowledgeBase:
 
             :param list faits: une liste de faits.
         """
-
         self.facts.extend(faits)
+
+        for i in range(len(self.facts)):
+            for j in range(i + 1, len(self.facts)):
+                if i < len(self.facts) and j < len(self.facts):
+                    fact1 = self.facts.__getitem__(i)
+                    fact2 = self.facts.__getitem__(j)
+                    if fact1.__eq__(fact2):
+                        self.facts.remove(fact1)
+                        self.facts.remove(fact2)
+                        fact1.addUrls(fact2.urls)
+                        self.facts.append(fact1)
+
+
 
     def addRule(self, description):
         """ Ajoute une règle dans la base de connaissances étant donné sa\
