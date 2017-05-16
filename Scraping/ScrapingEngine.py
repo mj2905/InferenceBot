@@ -70,6 +70,9 @@ class ScrapingEngine(object):
         urlBatch = list()
         i = 0
         for l in self.linksDB:
+            if "ImageBot" in l:
+                print("got")
+
             urlBatch.append(l)
             i += 1
 

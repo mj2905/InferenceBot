@@ -9,7 +9,7 @@ Example:
     The relevant pieces of information are the date, A and B. Therefore, for the encounter keyword we discard
     "Rencontre", "de" and "avec"
 """
-dateTranslationTable = {ord(c): None for c in '-"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ: *'}
+dateTranslationTable = {ord(c): None for c in '-"aàäöüéè\'bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ: *'}
 translationTable = {ord(c): None for c in '0123456789|[](){}.,:;/*%&?!^='}
 
 BIRTH = "Naissance"
