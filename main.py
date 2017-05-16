@@ -1,4 +1,5 @@
 from Editing.WikiWriter import *
+from Scraping.ScrapingEngine import ScrapingEngine
 from Scraping.WikiInference import *
 from Scraping.WikiStrings import *
 
@@ -63,7 +64,9 @@ def pretty(list_facts):
     return list_pretty
 
 def main():
-    write_inferences()
+    se = ScrapingEngine()
+    se.run()
+    write_inferences(se.getResultSet())
 
 if __name__ == '__main__':
     main()

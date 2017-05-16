@@ -2,6 +2,7 @@ import re
 from abc import ABCMeta, abstractmethod
 
 from InferenceEngine.Predicate import Atom, Predicate
+from Scraping.WikiStrings import dateTranslationTable
 
 
 class Atomiseable(metaclass=ABCMeta):
@@ -89,7 +90,8 @@ class Date(Atomiseable):
     Custom Date class which can be easily be converted into an Atom usable by the inference engine
     """
 
-    def __init__(self, year, month=1, day=1, hour=0, minute=0, second=0):
+    def __init__(self, year=1000, month=1, day=1, hour=0, minute=0, second=0):
+        print(year)
         self.year = int(year)
         self.month = int(month)
         self.day = int(day)
@@ -115,7 +117,7 @@ class Date(Atomiseable):
     @staticmethod
     def extractDate(str):
         vals = list()
-        s = str
+        s = str.translate(dateTranslationTable).strip()
 
         while (len(s) > 0 and len(vals) < 6):
             i = re.search("[\.:-]", s)
@@ -291,11 +293,15 @@ class WikiData:
     def __init__(self):
         self.data = set()
 
-    def joinWith(self, that):
+    def addPages(self, that):
         self.data |= that
+
+    def joinWith(self, that):
+        self.data |= that.data
 
     def add(self, elem):
         self.data.add(elem)
+
 
 
 class WikiPage:
