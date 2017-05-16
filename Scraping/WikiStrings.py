@@ -37,6 +37,8 @@ ELECTION_TODISCARD = 'Election de '
 MARIAGE = "Mariage"
 MARIAGE_TODISCARD = ["Mariage", "de", "avec", "entre", "et"]
 
+DIVORCE = "Divorce"
+
 POSITION = "Position"
 
 father = "père"

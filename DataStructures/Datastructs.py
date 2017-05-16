@@ -287,15 +287,17 @@ class WikiPage:
         self.positions = set()
         self.elections = set()
         self.weddings = set()
+        self.divorces = set()
         self.url = url
 
-    def addData(self, deaths, births, encounters, positions, elections, weddings, divorces):
+    def addData(self, deaths, births, encounters, positions, elections, weddings):
         self.deaths |= deaths
         self.births |= births
         self.encounters |= encounters
         self.positions |= positions
         self.elections |= elections
         self.weddings |= weddings
+        #self.divorces |= divorces
 
     def __str__(self):
         resStr = []
@@ -312,5 +314,7 @@ class WikiPage:
             resStr.append(str(elections))
         for wedding in self.weddings:
             resStr.append(str(wedding))
+        for divorce in self.divorces:
+            resStr.append(str(divorce))
 
         return '\n'.join(resStr)
