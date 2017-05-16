@@ -98,6 +98,15 @@ MARIAGE_RULES = [
     [[Predicate([d1, l1, p2], birth), Predicate([d2, l2, p2], death), Predicate([d3, l3, p1, p2], mariage), Predicate([d2, d3], before)],
     Predicate([d1, d2, d3, l1, l2, l3, p2, p1], error_mariage)]
 ]
+
+#Rules
+DIVORCE_RULES = [
+    [[Predicate([d1, l1, p1, p2], mariage], Predicate([d2, l2, p1, p3], mariage), Predicate([d1, d2], before), 
+    Predicate([d1, d2, l1, l2, p1, p2, p3], divorce)]
+    [[Predicate([d1, l1, p1, p2], mariage], Predicate([d2, l2, p1, p3], mariage), Predicate([d2, d1], before), 
+    Predicate([d2, d1, l1, l2, p1, p3, p2], divorce)]
+    
+]
 """
 MARIAGE_RULES = [
     [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p2], birth),
