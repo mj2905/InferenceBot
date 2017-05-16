@@ -1,7 +1,6 @@
 from Editing.InferenceWriter import write_inferences
 from Scraping.ScrapingEngine import ScrapingEngine
 
-
 def main():
     se = ScrapingEngine()
     se.run()

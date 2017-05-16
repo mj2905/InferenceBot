@@ -102,6 +102,12 @@ class Scraper(metaclass=ABCMeta):
             logging.warning(BAD_FORMAT, s)
             return None
 
+        dateRes[0] = dateRes[0].translate(dateTranslationTable).strip()
+
+        if dateRes[0] == '':
+            logging.warning(BAD_FORMAT, s)
+            return None
+
         date, locAndEvent = dateRes[0], dateRes[1]
         locRes = locAndEvent.split(".", 1)  # Specify at most 1 split to retrieve location
 
@@ -154,7 +160,13 @@ class Scraper(metaclass=ABCMeta):
 
         dateRes = s.split("/")
 
-        if (len(dateRes) != 2):
+        if len(dateRes) != 2:
+            logging.warning(BAD_FORMAT, s)
+            return None
+
+        dateRes[0] = dateRes[0].translate(dateTranslationTable).strip()
+
+        if dateRes[0] == '':
             logging.warning(BAD_FORMAT, s)
             return None
 

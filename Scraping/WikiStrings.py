@@ -9,7 +9,7 @@ Example:
     The relevant pieces of information are the date, A and B. Therefore, for the encounter keyword we discard
     "Rencontre", "de" and "avec"
 """
-dateTranslationTable = {ord(c): None for c in '-"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ: *'}
+dateTranslationTable = {ord(c): None for c in '-"aàäöüéè\'bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ: *'}
 translationTable = {ord(c): None for c in '0123456789|[](){}.,:;/*%&?!^='}
 
 BIRTH = "Naissance"
@@ -37,6 +37,8 @@ ELECTION_TODISCARD = 'Election de '
 MARIAGE = "Mariage"
 MARIAGE_TODISCARD = ["Mariage", "de", "avec", "entre", "et"]
 
+DIVORCE = "Divorce"
+
 POSITION = "Position"
 
 father = "père"
@@ -49,7 +51,7 @@ ERROR_DEATH = "Plusieurs morts"
 WARNING_ENCOUNTER = "Attention, erreur potentielle de rencontre"
 ERROR_ELECTION = "Erreur d'election"
 ERROR_MARIAGE = "Erreur de mariage"
-
+DIVORCE_INFERENCE = "Divorce possible"
 
 def validWikiUrl(url):
     if url in ["#", None]:
