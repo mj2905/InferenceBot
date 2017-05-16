@@ -17,7 +17,7 @@ def write_on_page(text, page = writePage):
 
     payload = {'action':'edit','assert':'user','format':'json','utf8':'','text':text,'summary':summary,'title':page,'token':edit_token}
     r4=requests.post(baseurl+'api.php',data=payload,cookies=edit_cookie)
-    print("Finished writing")
+    print("Finished writing on page " + page)
 
 def initialWrite(pageBeg = "", url = writePage):
     write_on_page(pageBeg + "\n" + output_title + "\n" + output_foot + "\n", url)

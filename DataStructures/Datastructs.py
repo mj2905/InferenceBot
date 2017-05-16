@@ -91,7 +91,6 @@ class Date(Atomiseable):
     """
 
     def __init__(self, year=0, month=0, day=0, hour=0, minute=0, second=0):
-        print(year)
         self.year = int(year)
         self.month = int(month)
         self.day = int(day)

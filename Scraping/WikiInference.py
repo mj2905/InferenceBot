@@ -62,8 +62,6 @@ class BirthInferenceChecker(InferenceChecker):
         self.addFacts(birthsFacts)
         self.addFacts(deathFacts)
 
-        print(births)
-
         for d in deaths:
             for b in births:
                 self.addFact(d.date.isBeforePredicate(b.date))
@@ -260,5 +258,6 @@ class DivorceInferenceChecker(InferenceChecker):
         return self.moteur.chain()
 
 if __name__ == '__main__':
-    t = EncounterInferenceChecker()
-    print(t.checkIfErrors())
+    pass
+    #t = EncounterInferenceChecker()
+    #print(t.checkIfErrors())
