@@ -44,6 +44,7 @@ Thumbs.db
 # Build dir #
 #############
 build/*
+__pycache__/
 
 # JetBrains' specific #
 #######################
