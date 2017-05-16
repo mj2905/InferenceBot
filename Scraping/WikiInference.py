@@ -193,6 +193,47 @@ class MariageInferenceChecker(InferenceChecker):
 
         return self.moteur.chain()
 
+class DivorceInferenceChecker(InferenceChecker):
+    def __init__(self, facts=None):
+        super().__init__(WikiRules.DIVORCE_RULES, facts)
+
+    def checkIfErrors(self, resData):
+
+        #resData = \
+        #    WikiScraper.run(
+        #        ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+        #        'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
+
+        mariagesFacts = []
+        birthsFacts = []
+        deathFacts = []
+
+        mariages = []
+        births = []
+        deaths = []
+
+        for page in resData.data:
+            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.weddings)))
+            mariages.extend(page.weddings)
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
+            births.extend(page.births)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
+            deaths.extend(page.deaths)
+
+        self.addFacts(mariagesFacts)
+        self.addFacts(birthsFacts)
+        self.addFacts(deathFacts)
+
+
+        for m in mariages:
+            for d in deaths:
+                if m.person1 == d.person or m.person2 == d.person :
+                    self.addFact(d.date.isBeforePredicate(m.date))
+            for b in births:
+                if m.person1 == b.person or m.person2 == b.person :
+                    self.addFact(m.date.isBeforePredicate(b.date))
+
+        return self.moteur.chain()
 
 if __name__ == '__main__':
     t = EncounterInferenceChecker()

@@ -256,31 +256,6 @@ class Mariage(SocialEvent):
     def __init__(self, date, location, person1, person2):
         super(Mariage, self).__init__(date, location, person1, person2, "Mariage")
 
-"""
-class Encounter(Event):
-    def __init__(self, date, location, person1, person2):
-        super().__init__(date)
-        self.location = location
-        self.person1 = person1
-        self.person2 = person2
-
-    def __key(self):
-        return (self.date, self.location, hash(self.person1) ^ hash(self.person2))
-
-    def __str__(self):
-        return str(self.date) + " - Rencontre de " + str(self.person1) + " et " + str(self.person2) + "."
-
-    def __hash__(self):
-        return hash(self.__key())
-
-    def __eq__(self, other):
-        return self.__key() == other.__key()
-
-    def toPredicate(self):
-        return Predicate([self.date.toAtom(), self.location.toAtom(), self.person1.toAtom(), self.person2.toAtom()],
-                         "Rencontre")
-"""
-
 def main():
     pass
 
@@ -314,7 +289,7 @@ class WikiPage:
         self.weddings = set()
         self.url = url
 
-    def addData(self, deaths, births, encounters, positions, elections, weddings):
+    def addData(self, deaths, births, encounters, positions, elections, weddings, divorces):
         self.deaths |= deaths
         self.births |= births
         self.encounters |= encounters
