@@ -1,3 +1,4 @@
+from Editing.PrettyPrinter import pretty
 from Editing.WikiWriter import write_on_page_after_title
 from Scraping.WikiInference import BirthInferenceChecker, EncounterInferenceChecker, ElectionInferenceChecker, \
     MariageInferenceChecker

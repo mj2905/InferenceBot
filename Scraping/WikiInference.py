@@ -50,13 +50,19 @@ class BirthInferenceChecker(InferenceChecker):
         deaths = []
 
         for page in resData.data:
-            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), filter(lambda x: x is not None,page.births))))
-            births.extend(list(page.births))
-            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), filter(lambda x: x is not None, page.deaths))))
-            deaths.extend(list(page.deaths))
+
+            birthsWithoutNone = list(filter(lambda x: x is not None,page.births))
+            deathsWithoutNone = list(filter(lambda x: x is not None,page.deaths))
+
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), birthsWithoutNone)))
+            births.extend(birthsWithoutNone)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), deathsWithoutNone)))
+            deaths.extend(deathsWithoutNone)
 
         self.addFacts(birthsFacts)
         self.addFacts(deathFacts)
+
+        print(births)
 
         for d in deaths:
             for b in births:
@@ -89,14 +95,18 @@ class EncounterInferenceChecker(InferenceChecker):
         encountersFacts = []
         positionsFacts = []
 
-        encounters = set()
-        positions = set()
+        encounters = []
+        positions = []
 
         for page in resData.data:
-            encountersFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.encounters)))
-            encounters |= page.encounters
-            positionsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.positions)))
-            positions |= page.positions
+
+            encountersWithoutNone = list(filter(lambda x: x is not None,page.encounters))
+            positionsWithoutNone = list(filter(lambda x: x is not None,page.positions))
+
+            encountersFacts.extend(list(map(lambda x: x.toPredicate(page.url), encountersWithoutNone)))
+            encounters.extend(encountersWithoutNone)
+            positionsFacts.extend(list(map(lambda x: x.toPredicate(page.url), positionsWithoutNone)))
+            positions.extend(positionsWithoutNone)
 
         self.addFacts(encountersFacts)
         self.addFacts(positionsFacts)
@@ -127,17 +137,22 @@ class ElectionInferenceChecker(InferenceChecker):
         birthsFacts = []
         deathFacts = []
 
-        elections = set()
-        births = set()
-        deaths = set()
+        elections = []
+        births = []
+        deaths = []
 
         for page in resData.data:
-            electionsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.elections)))
-            elections |= page.elections
-            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
-            births |= page.births
-            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
-            deaths |= page.deaths
+
+            electionsWithoutNone = list(filter(lambda x: x is not None,page.elections))
+            birthsWithoutNone = list(filter(lambda x: x is not None,page.births))
+            deathsWithoutNone = list(filter(lambda x: x is not None, page.deaths))
+
+            electionsFacts.extend(list(map(lambda x: x.toPredicate(page.url), electionsWithoutNone)))
+            elections.extend(electionsWithoutNone)
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), birthsWithoutNone)))
+            births.extend(birthsWithoutNone)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), deathsWithoutNone)))
+            deaths.extend(deathsWithoutNone)
 
         self.addFacts(electionsFacts)
         self.addFacts(birthsFacts)
@@ -171,12 +186,17 @@ class MariageInferenceChecker(InferenceChecker):
         deaths = []
 
         for page in resData.data:
-            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.weddings)))
-            mariages.extend(page.weddings)
-            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
-            births.extend(page.births)
-            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
-            deaths.extend(page.deaths)
+
+            weddingsWithoutNone = list(filter(lambda x: x is not None,page.weddings))
+            birthsWithoutNone = list(filter(lambda x: x is not None,page.births))
+            deathsWithoutNone = list(filter(lambda x: x is not None, page.deaths))
+
+            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), weddingsWithoutNone)))
+            mariages.extend(weddingsWithoutNone)
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), birthsWithoutNone)))
+            births.extend(birthsWithoutNone)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), deathsWithoutNone)))
+            deaths.extend(deathsWithoutNone)
 
         self.addFacts(mariagesFacts)
         self.addFacts(birthsFacts)
@@ -213,12 +233,16 @@ class DivorceInferenceChecker(InferenceChecker):
         deaths = []
 
         for page in resData.data:
-            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.weddings)))
-            mariages.extend(page.weddings)
-            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
-            births.extend(page.births)
-            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
-            deaths.extend(page.deaths)
+            weddingsWithoutNone = list(filter(lambda x: x is not None, page.weddings))
+            birthsWithoutNone = list(filter(lambda x: x is not None, page.births))
+            deathsWithoutNone = list(filter(lambda x: x is not None, page.deaths))
+
+            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), weddingsWithoutNone)))
+            mariages.extend(weddingsWithoutNone)
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), birthsWithoutNone)))
+            births.extend(birthsWithoutNone)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), deathsWithoutNone)))
+            deaths.extend(deathsWithoutNone)
 
         self.addFacts(mariagesFacts)
         self.addFacts(birthsFacts)
