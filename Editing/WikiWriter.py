@@ -8,6 +8,8 @@ summary = 'Wikipastbot update'
 listPage = 'InferenceBot - Listes des pages de test'
 writePage = 'InferenceBot - Output'
 
+output_title = "== InferenceBot =="
+output_foot = "----"
 
 
 def write_on_page(text, page = writePage):
@@ -16,6 +18,41 @@ def write_on_page(text, page = writePage):
     payload = {'action':'edit','assert':'user','format':'json','utf8':'','text':text,'summary':summary,'title':page,'token':edit_token}
     r4=requests.post(baseurl+'api.php',data=payload,cookies=edit_cookie)
     print("Finished writing")
+
+def initialWrite(pageBeg = "", url = writePage):
+    write_on_page(pageBeg + "\n" + output_title + "\n" + output_foot + "\n", url)
+
+def get_page_with_inference(page = writePage):
+
+    result = requests.post(baseurl + 'api.php?action=query&titles=' + page + '&export&exportnowrap')
+    soup = BeautifulSoup(result.text, "lxml")
+
+    for primitive in soup.findAll("text"):
+        code = primitive.string
+        try:
+            indexBeg = code.index(output_title)
+        except ValueError:
+            return (code,)
+        indexEnd = code.index(output_foot, indexBeg)
+        indexBeg+=len(output_title)
+
+        return (code, indexBeg, indexEnd)
+
+    return ("",)
+
+def get_page_or_create(page = writePage):
+    value = get_page_with_inference(page)
+    if len(value) < 3:
+        initialWrite(value[0], page)
+        return get_page_with_inference(page)
+    else:
+        return value
+
+
+def write_on_page_after_title(text, page = writePage):
+    value = get_page_or_create(page)
+    newTest = value[0][:value[1]] + "\n" + text + "\n" + value[0][value[2]:]
+    write_on_page(newTest, page)
 
 
 def run():
