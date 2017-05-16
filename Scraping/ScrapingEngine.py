@@ -83,6 +83,9 @@ class ScrapingEngine(object):
         logging.info("%s", str(self.objectsDB))
         logging.info("Processing time was %f second(s).", end - start)
 
+    def getResultSet(self):
+        return self.objectsDB
+
 
 if __name__ == '__main__':
     scEng = ScrapingEngine()
