@@ -3,7 +3,7 @@ from Scraping.WikiInference import *
 from Scraping.WikiStrings import *
 
 
-def write_birth_check():
+def write_inferences(resData):
 
     birth_facts = BirthInferenceChecker()
     encounter_facts = EncounterInferenceChecker()
@@ -11,10 +11,10 @@ def write_birth_check():
     mariage_facts = MariageInferenceChecker()
 
 
-    list_birth_facts = birth_facts.checkIfErrors()
-    list_encounter_facts = encounter_facts.checkIfErrors()
-    list_election_facts = election_facts.checkIfErrors()
-    list_mariage_facts = mariage_facts.checkIfErrors()
+    list_birth_facts = birth_facts.checkIfErrors(resData)
+    list_encounter_facts = encounter_facts.checkIfErrors(resData)
+    list_election_facts = election_facts.checkIfErrors(resData)
+    list_mariage_facts = mariage_facts.checkIfErrors(resData)
 
     list_facts = []
     if list_birth_facts is not None:
@@ -62,5 +62,8 @@ def pretty(list_facts):
                 + elem.propositions[2].name + " à [[" + elem.propositions[5].name + "]]")
     return list_pretty
 
+def main():
+    write_inferences()
+
 if __name__ == '__main__':
-    write_birth_check()
+    main()

@@ -5,7 +5,6 @@ from InferenceEngine.Knowledge import KnowledgeBase
 from InferenceEngine.RuleWithVariable import RuleWithVariable
 from InferenceEngine.Unificator import Unificator
 from Scraping import WikiRules
-from Scraping import WikiScraper
 from Scraping.WikiRules import B_RULES
 
 
@@ -36,13 +35,13 @@ class BirthInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(B_RULES, facts)
 
-    def checkIfErrors(self):
+    def checkIfErrors(self, resData):
 
         # Insert the url to check from
-        resData = \
-            WikiScraper.run(
-                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
-                'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
+        #resData =
+            #WikiScraper.run(
+             #   ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+             #   'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
         birthsFacts = []
         deathFacts = []
@@ -78,14 +77,14 @@ class EncounterInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(WikiRules.ENCOUNTER_RULES, facts)
 
-    def checkIfErrors(self):
+    def checkIfErrors(self, resData):
 
         # Insert the url to check from
-        resData = \
-            WikiScraper.run(
-                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
-                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Pompilius_Iuvenalis',
-                 'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Varius_Maxentius'])
+        #resData = \
+        #    WikiScraper.run(
+        #        ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+        #         'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Pompilius_Iuvenalis',
+        #         'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Varius_Maxentius'])
 
         encountersFacts = []
         positionsFacts = []
@@ -118,11 +117,11 @@ class ElectionInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(WikiRules.ELECTION_RULES, facts)
 
-    def checkIfErrors(self):
+    def checkIfErrors(self, resData):
 
-        resData = \
-            WikiScraper.run(
-                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
+        #resData = \
+        #    WikiScraper.run(
+        #        ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus'])
 
         electionsFacts = []
         birthsFacts = []
@@ -156,12 +155,12 @@ class MariageInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(WikiRules.MARIAGE_RULES, facts)
 
-    def checkIfErrors(self):
+    def checkIfErrors(self, resData):
 
-        resData = \
-            WikiScraper.run(
-                ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
-                'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
+        #resData = \
+        #    WikiScraper.run(
+        #        ['http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus',
+        #        'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
         mariagesFacts = []
         birthsFacts = []
