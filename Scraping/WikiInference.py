@@ -50,9 +50,9 @@ class BirthInferenceChecker(InferenceChecker):
         deaths = []
 
         for page in resData.data:
-            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.births)))
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), filter(lambda x: x is not None,page.births))))
             births.extend(list(page.births))
-            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), page.deaths)))
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), filter(lambda x: x is not None, page.deaths))))
             deaths.extend(list(page.deaths))
 
         self.addFacts(birthsFacts)
