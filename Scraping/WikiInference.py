@@ -223,38 +223,21 @@ class DivorceInferenceChecker(InferenceChecker):
         #        'http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Laurentinus_Porcius'])
 
         mariagesFacts = []
-        birthsFacts = []
-        deathFacts = []
 
         mariages = []
-        births = []
-        deaths = []
 
         for page in resData.data:
             weddingsWithoutNone = list(filter(lambda x: x is not None, page.weddings))
-            birthsWithoutNone = list(filter(lambda x: x is not None, page.births))
-            deathsWithoutNone = list(filter(lambda x: x is not None, page.deaths))
 
             mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), weddingsWithoutNone)))
             mariages.extend(weddingsWithoutNone)
-            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), birthsWithoutNone)))
-            births.extend(birthsWithoutNone)
-            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), deathsWithoutNone)))
-            deaths.extend(deathsWithoutNone)
 
         self.addFacts(mariagesFacts)
-        self.addFacts(birthsFacts)
-        self.addFacts(deathFacts)
-
 
         for m in mariages:
-            for d in deaths:
-                if m.person1 == d.person or m.person2 == d.person :
-                    self.addFact(d.date.isBeforePredicate(m.date))
-            for b in births:
-                if m.person1 == b.person or m.person2 == b.person :
-                    self.addFact(m.date.isBeforePredicate(b.date))
-
+            for m2 in mariages:
+                if m.person1 == m2.person2 or m.person1 == m2.person1 and m.date != m2.date:
+                    self.addFact(m.date.isBeforePredicate(m2.date))
         return self.moteur.chain()
 
 if __name__ == '__main__':

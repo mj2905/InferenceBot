@@ -33,7 +33,7 @@ encounter = WikiStrings.ENCOUNTER
 position = WikiStrings.POSITION
 election = WikiStrings.ELECTION
 mariage = WikiStrings.MARIAGE
-divorce = WikiStrings.DIVORCE
+divorce = WikiStrings.DIVORCE_INFERENCE
 # close = WikiStrings.CLOSE
 far = WikiStrings.FAR
 error_multi_birth = WikiStrings.ERROR_BIRTH
@@ -108,22 +108,7 @@ DIVORCE_RULES = [
     Predicate([d2, d1, l1, l2, p1, p3, p2], divorce)]
 
 ]
-"""
-MARIAGE_RULES = [
-    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p2], birth),
-    Predicate([d4, l4, p2], death), Predicate([d5, l5, p1, p2], mariage), Predicate([d5, d1], before)],
-    Predicate([d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, p1, p2], error_mariage)],
-    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p2], birth),
-    Predicate([d4, l4, p2], death), Predicate([d5, l5, p1, p2], mariage), Predicate([d2, d5], before)],
-    Predicate([d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, p1, p2], error_mariage)],
-    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p2], birth),
-    Predicate([d4, l4, p2], death), Predicate([d5, l5, p1, p2], mariage), Predicate([d5, d3], before)],
-    Predicate([d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, p1, p2], error_mariage)],
-    [[Predicate([d1, l1, p1], birth), Predicate([d2, l2, p1], death), Predicate([d3, l3, p2], birth),
-    Predicate([d4, l4, p2], death), Predicate([d5, l5, p1, p2], mariage), Predicate([d4, d5], before)],
-    Predicate([d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, p1, p2], error_mariage)]
-]
-"""
+
 # Rule ideas:
     #Date de Distinction > Date naissance
     #Date d'Election > Date naissance et < Date mort

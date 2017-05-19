@@ -1,7 +1,7 @@
 from Editing.PrettyPrinter import pretty
 from Editing.WikiWriter import write_on_page_after_title
 from Scraping.WikiInference import BirthInferenceChecker, EncounterInferenceChecker, ElectionInferenceChecker, \
-    MariageInferenceChecker
+    MariageInferenceChecker, DivorceInferenceChecker
 
 
 def write_inferences(resData):
@@ -10,12 +10,14 @@ def write_inferences(resData):
     encounter_facts = EncounterInferenceChecker()
     election_facts = ElectionInferenceChecker()
     mariage_facts = MariageInferenceChecker()
+    divorce_facts = DivorceInferenceChecker()
 
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
     list_encounter_facts = encounter_facts.checkIfErrors(resData)
     list_election_facts = election_facts.checkIfErrors(resData)
     list_mariage_facts = mariage_facts.checkIfErrors(resData)
+    list_divorce_facts = divorce_facts.checkIfErrors(resData)
 
     list_facts = []
     if list_birth_facts is not None:
@@ -26,6 +28,8 @@ def write_inferences(resData):
         list_facts.extend(list_election_facts)
         #  if list_mariage_facts is not None:
         #     list_facts.extend(list_mariage_facts)
+    if list_divorce_facts is not None:
+        list_facts.extend(list_divorce_facts)
 
     list_filtered = pretty(list_facts)
     writeOnPages(list_filtered)

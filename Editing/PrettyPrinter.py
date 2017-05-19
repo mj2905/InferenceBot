@@ -35,6 +35,9 @@ def pretty(list_facts):
             string = (elem.name + " : [[" + elem.propositions[6].name + " ]] (" + elem.propositions[0].name
                 + " / " + elem.propositions[1].name + ") et " + elem.propositions[7].name + " se marient le "
                 + elem.propositions[2].name + " à [[" + elem.propositions[5].name + "]]")
+        elif DIVORCE_INFERENCE in elem.name:
+            string = (elem.name + " : [[" + elem.propositions[4].name + "]] se marie avec [[" + elem.propositions[5].name + "]] en "
+            + elem.propositions[0].name + " puis avec [[" + elem.propositions[6].name + "]] en " + elem.propositions[1].name)
 
         if string is not None:
             list_pretty.append((string, modifyURLToDiscussion(elem.urls)))
