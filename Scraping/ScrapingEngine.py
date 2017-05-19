@@ -25,7 +25,7 @@ class ScrapingEngine(object):
         logging.info("Building link database")
         baseurl = 'http://wikipast.epfl.ch/wikipast/'
 
-        protected_logins = ["Frederickaplan", "Maud", "Vbuntinx", "Testbot", "IB", "SourceBot", "PageUpdaterBot",
+        protected_logins = ["Frederickaplan", "Maud", "Vbuntinx", "InferenceBot", "Testbot", "IB", "SourceBot", "PageUpdaterBot",
                             "Orthobot", "BioPathBot", "ChronoBOT", "Amonbaro", "AntoineL", "AntoniasBanderos", "Arnau",
                             "Arnaudpannatier", "Aureliver", "Brunowicht", "Burgerpop", "Cedricviaccoz", "Christophe",
                             "Claudioloureiro", "Ghislain", "Gregoire3245", "Hirtg", "Houssm", "Icebaker", "JenniCin",
@@ -36,7 +36,7 @@ class ScrapingEngine(object):
                             "QuentinB", "Raphael.barman", "Roblan11", "Romain Fournier", "Sbaaa", "Snus", "Sonia",
                             "Tboyer",
                             "Thierry", "Titi", "Vlaedr", "Wanda"]
-        depuis_date = '2017-05-02T16:00:00Z'
+        depuis_date = '2017-05-10T16:00:00Z'
 
         for user in protected_logins:
             result = requests.post(
