@@ -11,6 +11,9 @@ writePage = 'InferenceBot - Output'
 output_title = "== InferenceBot =="
 output_foot = "----"
 
+picture_title = "== InferenceBotPicture =="
+picture_foot = "----"
+
 
 def write_on_page(text, page = writePage):
     (edit_token, edit_cookie) = establish_connexion()
@@ -19,10 +22,10 @@ def write_on_page(text, page = writePage):
     r4=requests.post(baseurl+'api.php',data=payload,cookies=edit_cookie)
     print("Finished writing on page " + page)
 
-def initialWrite(pageBeg = "", url = writePage):
+def initialWrite(pageBeg = "", url = writePage, output_title = output_title, output_foot = output_foot):
     write_on_page(pageBeg + "\n" + output_title + "\n" + output_foot + "\n", url)
 
-def get_page_with_inference(page = writePage):
+def get_page_with_inference(page = writePage, output_title = output_title, output_foot = output_foot):
 
     result = requests.post(baseurl + 'api.php?action=query&titles=' + page + '&export&exportnowrap')
     soup = BeautifulSoup(result.text, "lxml")
@@ -40,19 +43,19 @@ def get_page_with_inference(page = writePage):
 
     return ("",)
 
-def get_page_or_create(page = writePage):
-    value = get_page_with_inference(page)
+def get_page_or_create(page = writePage, output_title = output_title, output_foot = output_foot):
+    value = get_page_with_inference(page, output_title, output_foot)
     if len(value) < 3:
-        initialWrite(value[0], page)
-        return get_page_with_inference(page)
+        initialWrite(value[0], page, output_title, output_foot)
+        return get_page_with_inference(page, output_title, output_foot)
     else:
         return value
 
 
 def write_on_page_after_title(text, page = writePage):
     value = get_page_or_create(page)
-    newTest = value[0][:value[1]] + "\n" + text + "\n" + value[0][value[2]:]
-    write_on_page(newTest, page)
+    newText = value[0][:value[1]] + "\n" + text + "\n" + value[0][value[2]:]
+    write_on_page(newText, page)
 
 
 def run():
@@ -83,6 +86,21 @@ def establish_connexion():
     edit_cookie.update(r3.cookies)
 
     return(edit_token, edit_cookie)
+
+
+#pictureName needs to have the extension
+def write_picture_after_title(picture, pictureName, page = writePage):
+
+    (edit_token, edit_cookie) = establish_connexion()
+
+    payload = {'action': 'upload', 'filename': pictureName, 'token': edit_token, 'ignorewarnings': 1}
+    files = {'file': picture}
+
+    r4 = requests.post(baseurl + 'api.php', data=payload, files=files, cookies=edit_cookie)
+
+    value = get_page_or_create(page, picture_title, picture_foot)
+    p = value[0][:value[1]] + "\n [[Fichier:" + pictureName + "]] \n" + value[0][value[2]:]
+    write_on_page(p, page)
 
 
 if __name__ == '__main__':
