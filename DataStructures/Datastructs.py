@@ -276,6 +276,9 @@ class WikiData:
     def add(self, elem):
         self.data.add(elem)
 
+    def clear(self):
+        self.data = set()
+
 
 
 class WikiPage:

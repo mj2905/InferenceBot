@@ -10,7 +10,7 @@ import Scraping.WikiScraper
 from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.ERROR)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 
 class ScrapingEngine(object):
@@ -45,7 +45,7 @@ class ScrapingEngine(object):
 
             for primitive in soup.usercontribs.findAll('item'):
                 self.linksDB.add(''.join([self.urlTitlePrefix, re.sub('\s+', '_', str(primitive['title']))]))
-                print(primitive['title'])
+                # print(primitive['title'])
 
         for link in self.linksDB:
             logging.info("%s", link)
@@ -89,6 +89,18 @@ class ScrapingEngine(object):
     def getResultSet(self):
         return self.objectsDB
 
+    def isReady(self):
+        return len(self.linksDB) != 0
+
+    def clear(self):
+        self.clearLinks()
+        self.clearResults()
+
+    def clearLinks(self):
+        self.linksDB = set()
+
+    def clearResults(self):
+        self.objectsDB.clear()
 
 if __name__ == '__main__':
     scEng = ScrapingEngine()
