@@ -1,5 +1,5 @@
 from Editing.PrettyPrinter import pretty
-from Editing.WikiWriter import write_on_page_after_title
+from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists
 from Scraping.WikiGraph import WikiGenalogyTree
 from Scraping.WikiInference import *
 
@@ -34,8 +34,11 @@ def write_inferences(resData):
     if list_divorce_facts is not None:
         list_facts.extend(list_divorce_facts)
 
-    list_filtered = pretty(list_facts)
+    (list_filtered, pagesWithNothing) = pretty(list_facts)
     writeOnPages(list_filtered)
+
+    for url in pagesWithNothing:
+        delete_on_page_if_exists(url)
 
 def writeOnPages(factsWithPages):
     dict = {}

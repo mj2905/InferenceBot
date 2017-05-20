@@ -176,5 +176,3 @@ def mainCLI():
 
 if __name__ == '__main__':
     mainCLI()
-    # se.run()
-    # write_inferences(se.getResultSet())
