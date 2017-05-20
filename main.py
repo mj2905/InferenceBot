@@ -175,4 +175,4 @@ def mainCLI():
 
 
 if __name__ == '__main__':
-    mainCLI()
+    main()

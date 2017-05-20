@@ -46,7 +46,7 @@ def pretty(list_facts):
             pagesWithSomething = pagesWithSomething.union(elem.urls)
 
     pagesWithNothing = set([filteredUrl for fact in list_facts
-                            for url in fact.urls if url not in pagesWithSomething
-                            for filteredUrl in modifyURLToDiscussion(set([url]))])
+                                            for url in fact.urls if url not in pagesWithSomething
+                                            for filteredUrl in modifyURLToDiscussion(set([url]))])
 
     return (list_pretty, pagesWithNothing)
