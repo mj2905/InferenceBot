@@ -40,9 +40,9 @@ error_multi_birth = WikiStrings.ERROR_BIRTH
 error_multi_death = WikiStrings.ERROR_DEATH
 warning_encounter = WikiStrings.WARNING_ENCOUNTER
 
-father = WikiStrings.father
-grandfather = WikiStrings.grandfather
-son = WikiStrings.son
+father = WikiStrings.FATHER
+grandfather = WikiStrings.GRANDFATHER
+son = WikiStrings.SON
 
 error_election = WikiStrings.ERROR_ELECTION
 error_mariage = WikiStrings.ERROR_MARIAGE

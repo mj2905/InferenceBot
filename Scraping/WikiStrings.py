@@ -37,13 +37,18 @@ ELECTION_TODISCARD = 'Election de '
 MARIAGE = "Mariage"
 MARIAGE_TODISCARD = ["Mariage", "de", "avec", "entre", "et"]
 
+PARENTHOOD_KEYWORD = "Parenté"
+PARENTHOOD = "de"
+PARENTHOOD_REGEXP = r'(père de| mère de) (\w+) (\w+) est (\w+) (\w+)'
+PARENTHOOD_TODISCARD = ["mère", "père", "de", "la", "le", "La", "Le", "est"]
+
 DIVORCE = "Divorce"
 
 POSITION = "Position"
 
-father = "père"
-grandfather = "grand-père"
-son = "fils"
+FATHER = "père"
+GRANDFATHER = "grand-père"
+SON = "fils"
 
 ERROR_DATE = "Erreur de date"
 ERROR_BIRTH = "Plusieurs naissances"

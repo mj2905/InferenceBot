@@ -272,6 +272,7 @@ class EncounterScraper(Scraper):
         tmp = Scraper.binaryEventExtractor(s, WikiStrings.ENCOUNTER_TODISCARD, WikiStrings.ENCOUNTER)
         return None if tmp is None else Encounter(*tmp)
 
+
 class ElectionScraper(Scraper):
     """
     A Scapper class psecialized in scrapping elections of individuals
@@ -319,15 +320,16 @@ class ParentScraper(Scraper):
 
     @staticmethod
     def keyword():
-        pass
+        return WikiStrings.PARENTHOOD_KEYWORD
 
     @staticmethod
     def find(data):
-        pass
+        return data.findAll(string=re.compile(WikiStrings.PARENTHOOD_REGEXP))
 
     @staticmethod
     def extract(s):
-        pass
+        tmp = Scraper.binaryEventExtractor(s, WikiStrings.PARENTHOOD_TODISCARD, WikiStrings.PARENTHOOD_KEYWORD)
+        return None if tmp is None else Encounter(*tmp)
 
 
 def processUrl(url, responses, i):
@@ -372,7 +374,7 @@ def run(urlList):
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
-        parents = set()
+        parents = scrap_generic(soup, ParentScraper)
 
         wikiPage = WikiPage(urlList.__getitem__(i))
         wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parents)
@@ -382,4 +384,16 @@ def run(urlList):
 
 
 if __name__ == '__main__':
-    run()
+    s =  """1000.10.10 / Rome. Rencontre de Secundinus Aurelianus avec Pompilius Iuvenalis.\n
+    - / -. La mère de Secundinus Aurelianus est Laelia Eumenius.\n"+
+    1110.11.04 / Eyjafjallajökull. Mariage de Secundinus Aurelianus avec Suedia Silius"""
+
+    res = re.search(r"(père de| mère de)", s)
+    if res:
+        print("Found")
+        print(res.start())
+        print(res.end())
+    else:
+        print("not found")
+
+    run(["http://wikipast.epfl.ch/wikipast/index.php/Secundinus_Aurelianus"])
