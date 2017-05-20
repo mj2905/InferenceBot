@@ -1,19 +1,40 @@
 import sys
 import threading
 import time
+from datetime import date, timedelta
 
 from Editing.InferenceWriter import write_inferences
+from InputValidation import *
 from Scraping.ScrapingEngine import ScrapingEngine
 
 
-def main():
-    se.run()
-    write_inferences(se.getResultSet())
+def setupScrapeBeginDate(*args):
+    daysParamString = "--days"
+
+    global scrapeBeginDate
+
+    argsList = list(*args)
+
+    if (daysParamString in argsList):
+        i = argsList.index(daysParamString)
+        if (len(argsList) > i + 1) and isValidInteger(argsList[i + 1]):
+            scrapeBeginDate = date.today() - timedelta(int(argsList[1]))
+            return True
+        else:
+            print("Invalid argument")
+            return False
+
+    # No date parameter, continue
+    else:
+        scrapeBeginDate = yesterday
+        return True
 
 
 def autorun(*args):
     global currentTask
-    currentTask = threading.Thread(target=loopTask, args=(killPill,))
+    global scrapeBeginDate
+
+    currentTask = threading.Thread(target=loopTask, args=(killPill, *args))
     currentTask.setDaemon(True)
     currentTask.start()
 
@@ -47,14 +68,20 @@ def thanks(*args):
 
 
 def scrape(*args):
-    se.run()
+    if not setupScrapeBeginDate(args):
+        return False
+
+    else:
+        se.run(scrapeBeginDate.strftime(TIME_FORMAT))
+
+    return True
 
 
 def clean(*args):
     se.clear()
 
 
-def loopTask(stopEvent):
+def loopTask(stopEvent, *args):
     print("Starting up the daemon")
     while not stopEvent.wait(1):
         waitingTime = 0
@@ -63,16 +90,17 @@ def loopTask(stopEvent):
         if stopEvent.wait(3):
             break
 
-        scrape()
+        if not scrape(*args):
+            break
 
         print("Inference is about to take place")
 
         if stopEvent.wait(3):
             break
 
-        infer()
+        infer(*args)
 
-        print("Going for a coffee break, see you in 10 minutes")
+        print("Going for a coffee break, see you in 10 minutes. (^_^)o自")
 
         while not stopEvent.wait(1) and waitingTime < 600:
             waitingTime = waitingTime + 1
@@ -90,18 +118,7 @@ def dummyTask(stopEvent):
         time.sleep(1)
 
 
-def mainTask(stopEvent):
-    while not stopEvent.wait(1):
-        print("Starting up")
-        se.run()
-        write_inferences(se.getResultSet())
-        print("Coffee break, see you in 10 minutes.")
-        time.sleep(60 * 10)
-
-    print("Shutting down")
-
-
-def infer():
+def infer(*args):
     if not se.isReady():
         print("Please run wiki scraping first")
         return
@@ -120,18 +137,22 @@ def shutdown(*args):
 
 
 def die(*args):
-    print("\(ﾟДﾟ)/")
+    print("\(ﾟДﾟ)/  ¬")
 
     if currentTask is not None and currentTask.is_alive():
         stop()
 
-    print("(x_x)")
+    print("-(x_x)-")
     time.sleep(1)
     sys.exit(0)
 
 
 GREET = 'InferenceBot is at your service'
 PROMPT = 'InferenceBot > '
+TIME_BEGIN = "2000-01-01T00:00:00Z"
+TIME_FORMAT = "%Y-%m-%dT00:00:00Z"
+yesterday = date.today() - timedelta(1)
+scrapeBeginDate = yesterday
 currentTask = None
 killPill = threading.Event()
 command_list = [hello, hi, thanks, scrape, infer, autorun, stop, shutdown, die]
@@ -155,3 +176,5 @@ def mainCLI():
 
 if __name__ == '__main__':
     mainCLI()
+    # se.run()
+    # write_inferences(se.getResultSet())
