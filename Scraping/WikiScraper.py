@@ -272,6 +272,7 @@ class EncounterScraper(Scraper):
         tmp = Scraper.binaryEventExtractor(s, WikiStrings.ENCOUNTER_TODISCARD, WikiStrings.ENCOUNTER)
         return None if tmp is None else Encounter(*tmp)
 
+
 class ElectionScraper(Scraper):
     """
     A Scapper class psecialized in scrapping elections of individuals
@@ -307,7 +308,27 @@ class MariageScraper(Scraper):
     @staticmethod
     def extract(s):
         tmp = Scraper.binaryEventExtractor(s, WikiStrings.MARIAGE_TODISCARD, WikiStrings.MARIAGE)
-        return None if tmp is None else Mariage(*tmp)
+        return None if tmp is None else Wedding(*tmp)
+
+
+# TODO Implement ParentScraper ( try to do with the two different sex (fille, fils) as now Person have a
+# TODO sex attribute ('F' or 'M' or '')
+class ParentScraper(Scraper):
+    """
+    A Scapper class specialized in scrapping mariage of individuals
+    """
+
+    @staticmethod
+    def keyword():
+        pass
+
+    @staticmethod
+    def find(data):
+        pass
+
+    @staticmethod
+    def extract(s):
+        pass
 
 
 def processUrl(url, responses, i):
@@ -352,9 +373,10 @@ def run(urlList):
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
+        parent = set()
 
         wikiPage = WikiPage(urlList.__getitem__(i))
-        wikiPage.addData(deaths, births, encounters, positions, elections, mariages)
+        wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parent)
         resData.add(wikiPage)
 
     return resData
