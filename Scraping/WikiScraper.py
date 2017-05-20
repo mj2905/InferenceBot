@@ -200,19 +200,23 @@ class BirthScraper(Scraper):
     """
     A Scraper class specialized in scraping births of individuals
     """
+    REGEX = r'Naissance de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
-    def keyword():
-        return WikiStrings.BIRTH
+    def extract(text):
+        entities = set()
+        result = re.finditer(BirthScraper.REGEX, text)
+        for g in result:
+            name = g.group('name')
+            lastName = g.group('lastName')
 
-    @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.BIRTH)
+            parent = Person(parentName, parentLastName, sex)
+            child = Person(childName, childLastName)
+            parentRelation = Parent(parent, child)
+            entities.add(parentRelation)
+            logging.info("Crafted object: %s", parent)
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.unaryEventExtractor(s, WikiStrings.BIRTH_TODISCARD, WikiStrings.BIRTH)
-        return None if tmp is None else Birth(*tmp)
+        return entities
 
 
 class DeathScraper(Scraper):
@@ -311,8 +315,6 @@ class MariageScraper(Scraper):
         return None if tmp is None else Wedding(*tmp)
 
 
-# TODO Implement ParentScraper ( try to do with the two different sex (fille, fils) as now Person have a
-# TODO sex attribute ('F' or 'M' or '')
 class ParentScraper(Scraper):
     """
     A Scapper class specialized in scrapping parent-child relationships
@@ -382,6 +384,7 @@ def run(urlList):
 
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
+        soupText = str(soup.text)
 
         births = scrap_generic(soup, BirthScraper)
         deaths = scrap_generic(soup, DeathScraper)
@@ -389,7 +392,7 @@ def run(urlList):
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
-        parents = ParentScraper.extract(str(soup.text))
+        parents = ParentScraper.extract(soupText)
 
         wikiPage = WikiPage(urlList.__getitem__(i))
         wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parents)
@@ -399,16 +402,5 @@ def run(urlList):
 
 
 if __name__ == '__main__':
-    s =  """1000.10.10 / Rome. Rencontre de Secundinus Aurelianus avec Pompilius Iuvenalis.\n
-    - / -. La mère de Secundinus Aurelianus est Laelia Eumenius.\n"+
-    1110.11.04 / Eyjafjallajökull. Mariage de Secundinus Aurelianus avec Suedia Silius"""
-
-    res = re.search(r"(père de| mère de)", s)
-    if res:
-        print("Found")
-        print(res.start())
-        print(res.end())
-    else:
-        print("not found")
 
     run(["http://wikipast.epfl.ch/wikipast/index.php/Secundinus_Aurelianus"])
