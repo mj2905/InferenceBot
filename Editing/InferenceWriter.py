@@ -10,7 +10,6 @@ def write_inferences(resData):
     election_facts = ElectionInferenceChecker()
     mariage_facts = MariageInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
-    parent_facts = ParentInferenceChecker()
 
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
@@ -18,7 +17,6 @@ def write_inferences(resData):
     list_election_facts = election_facts.checkIfErrors(resData)
     list_mariage_facts = mariage_facts.checkIfErrors(resData)
     list_divorce_facts = divorce_facts.checkIfErrors(resData)
-    list_parent_facts = parent_facts.checkIfErrors(resData)
 
     list_facts = []
     if list_birth_facts is not None:
@@ -31,8 +29,6 @@ def write_inferences(resData):
         #     list_facts.extend(list_mariage_facts)
     if list_divorce_facts is not None:
         list_facts.extend(list_divorce_facts)
-    if list_parent_facts is not None:
-        list_facts.extend(list_parent_facts)
 
     list_filtered = pretty(list_facts)
     writeOnPages(list_filtered)
