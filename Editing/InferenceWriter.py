@@ -4,7 +4,7 @@ from Scraping.WikiGraph import WikiGenalogyTree
 from Scraping.WikiInference import *
 
 
-def write_inferences(resData):
+def write_inferences(resData, allLinks):
 
     birth_facts = BirthInferenceChecker()
     encounter_facts = EncounterInferenceChecker()
@@ -34,7 +34,7 @@ def write_inferences(resData):
     if list_divorce_facts is not None:
         list_facts.extend(list_divorce_facts)
 
-    (list_filtered, pagesWithNothing) = pretty(list_facts)
+    (list_filtered, pagesWithNothing) = pretty(list_facts, allLinks)
     writeOnPages(list_filtered)
 
     for url in pagesWithNothing:

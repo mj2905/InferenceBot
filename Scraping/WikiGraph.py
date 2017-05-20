@@ -49,6 +49,7 @@ class WikiGenalogyTree(WikiGraph):
 
             g.render('img/' + str(hash(g)))
 
+
     # The function to look for connected components.
     def connected_components(self):
 
