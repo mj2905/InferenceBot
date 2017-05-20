@@ -226,8 +226,11 @@ class SocialEvent(Event, metaclass=ABCMeta):
             predicateName = strName
         self.predicateName = predicateName
 
+    def members(self):
+        return [self.person1, self.person2]
+
     def __key(self):
-        return (self.date, self.location, hash(self.person1) ^ hash(self.person2))
+        return (self.date, self.location, hash(self.person1) ^ hash(self.person2), self.predicateName)
 
     def __str__(self):
         return str(self.date) + " - " + self.strName + " de " + str(self.person1) + " et " + str(self.person2) + "."
@@ -272,10 +275,10 @@ class Wedding(SocialEvent):
     def __init__(self, date, location, person1, person2):
         super(Wedding, self).__init__(date, location, person1, person2, "Mariage")
 
-class Parent:
-    def __init__(self, parent, child):
-        self.parent = parent
-        self.child = child
+
+class Parent(SocialEvent):
+    def __init__(self, person1, person2):
+        super(Parent, self).__init__(None, None, person1, person2, "Parent")
 
 
 def main():
