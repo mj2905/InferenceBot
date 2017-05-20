@@ -103,10 +103,7 @@ MARIAGE_RULES = [
 #Rules
 DIVORCE_RULES = [
     [[Predicate([d1, l1, p1, p2], mariage), Predicate([d2, l2, p1, p3], mariage), Predicate([d1, d2], before)],
-    Predicate([d1, d2, l1, l2, p1, p2, p3], divorce)],
-    [[Predicate([d1, l1, p1, p2], mariage), Predicate([d2, l2, p1, p3], mariage), Predicate([d2, d1], before)],
-    Predicate([d2, d1, l1, l2, p1, p3, p2], divorce)]
-
+    Predicate([d1, d2, l1, l2, p1, p2, p3], divorce)]
 ]
 
 # Rule ideas:

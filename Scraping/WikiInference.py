@@ -228,7 +228,7 @@ class DivorceInferenceChecker(InferenceChecker):
         mariagesFacts = []
 
         mariages = []
-
+        
         for page in resData.data:
             weddingsWithoutNone = list(filter(lambda x: x is not None, page.weddings))
 
@@ -237,10 +237,13 @@ class DivorceInferenceChecker(InferenceChecker):
 
         self.addFacts(mariagesFacts)
 
-        for m in mariages:
-            for m2 in mariages:
-                if m.person1 == m2.person2 or m.person1 == m2.person1 and m.date != m2.date:
+        for i in range(len(mariages)):
+            for j in range(i + 1, len(mariages)):
+                m = mariages[i]
+                m2 = mariages[j]
+                if  m.person1 == m2.person1 and m.date != m2.date:
                     self.addFact(m.date.isBeforePredicate(m2.date))
+
         return self.moteur.chain()
 
 if __name__ == '__main__':
