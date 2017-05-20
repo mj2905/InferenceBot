@@ -36,7 +36,6 @@ class ScrapingEngine(object):
                             "QuentinB", "Raphael.barman", "Roblan11", "Romain Fournier", "Sbaaa", "Snus", "Sonia",
                             "Tboyer",
                             "Thierry", "Titi", "Vlaedr", "Wanda"]
-        depuis_date = '2017-05-19T16:00:00Z'
 
         for user in protected_logins:
             result = requests.post(
