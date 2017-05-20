@@ -243,33 +243,6 @@ class DivorceInferenceChecker(InferenceChecker):
                     self.addFact(m.date.isBeforePredicate(m2.date))
         return self.moteur.chain()
 
-class ParentInferenceChecker(InferenceChecker):
-    def __init__(self, facts=None):
-        super().__init__(WikiRules.MARIAGE_RULES, facts)
-
-    def checkIfErrors(self, resData):
-
-        parentsFacts = []
-
-        parents = []
-
-        for page in resData.data:
-
-            parentsWithoutNone = list(filter(lambda x: x is not None,page.parents))
-            
-            parentsFacts.extend(list(map(lambda x: x.toPredicate(page.url), parentsWithoutNone)))
-            parents.extend(parentsWithoutNone)
-            
-        self.addFacts(parentsFacts)
-
-
-        for m in parents:
-            for m2 in parents:
-                if m.person1 == m2.person2 or m.person1 == m2.person1 and m.date != m2.date:
-                    self.addFact(m.date.isBeforePredicate(m2.date))
-        return self.moteur.chain()
-
-
 if __name__ == '__main__':
     pass
     #t = EncounterInferenceChecker()
