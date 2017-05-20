@@ -315,21 +315,35 @@ class MariageScraper(Scraper):
 # TODO sex attribute ('F' or 'M' or '')
 class ParentScraper(Scraper):
     """
-    A Scapper class specialized in scrapping mariage of individuals
+    A Scapper class specialized in scrapping parent-child relationships
     """
+    REGEX = r'((?P<male>Le père de)|(?P<female>La mère de)) (?P<childName>\w+) (?P<childLastName>\w+) est (?P<parentName>\w+) (?P<parentLastName>\w+).'
 
     @staticmethod
-    def keyword():
-        return WikiStrings.PARENTHOOD_KEYWORD
+    def extract(text):
+        entities = set()
+        result = re.finditer(ParentScraper.REGEX, text)
+        for g in result:
+            parentName = g.group('parentName')
+            parentLastName = g.group('parentLastName')
+            childName = g.group('childName')
+            childLastName = g.group('childLastName')
+            male = g.group('male')
+            female = g.group('female')
 
-    @staticmethod
-    def find(data):
-        return data.findAll(string=re.compile(WikiStrings.PARENTHOOD_REGEXP))
+            sex = ''
+            if male is not None:
+                sex = 'M'
+            elif female is not None:
+                sex = 'F'
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.binaryEventExtractor(s, WikiStrings.PARENTHOOD_TODISCARD, WikiStrings.PARENTHOOD_KEYWORD)
-        return None if tmp is None else Encounter(*tmp)
+            parent = Person(parentName, parentLastName, sex)
+            child = Person(childName, childLastName)
+            parentRelation = Parent(parent, child)
+            entities.add(parentRelation)
+            logging.info("Crafted object: %s", parent)
+
+        return entities
 
 
 def processUrl(url, responses, i):
@@ -368,13 +382,14 @@ def run(urlList):
 
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
+
         births = scrap_generic(soup, BirthScraper)
         deaths = scrap_generic(soup, DeathScraper)
         encounters = scrap_generic(soup, EncounterScraper)
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
-        parents = scrap_generic(soup, ParentScraper)
+        parents = ParentScraper.extract(str(soup.text))
 
         wikiPage = WikiPage(urlList.__getitem__(i))
         wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parents)
