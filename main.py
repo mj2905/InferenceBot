@@ -82,6 +82,7 @@ def clean(*args):
 
 
 def loopTask(stopEvent, *args):
+
     print("Starting up the daemon")
     while not stopEvent.wait(1):
         waitingTime = 0
@@ -106,6 +107,7 @@ def loopTask(stopEvent, *args):
             waitingTime = waitingTime + 1
 
         clean()
+        args = ()
 
     print("Daemon has stopped")
 
