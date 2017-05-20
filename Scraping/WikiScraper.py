@@ -307,7 +307,7 @@ class MariageScraper(Scraper):
     @staticmethod
     def extract(s):
         tmp = Scraper.binaryEventExtractor(s, WikiStrings.MARIAGE_TODISCARD, WikiStrings.MARIAGE)
-        return None if tmp is None else Mariage(*tmp)
+        return None if tmp is None else Wedding(*tmp)
 
 
 def processUrl(url, responses, i):
@@ -352,9 +352,10 @@ def run(urlList):
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
+        parents = set()
 
         wikiPage = WikiPage(urlList.__getitem__(i))
-        wikiPage.addData(deaths, births, encounters, positions, elections, mariages)
+        wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parents)
         resData.add(wikiPage)
 
     return resData
