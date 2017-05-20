@@ -3,10 +3,9 @@ import re
 import time
 import urllib.request as urllib
 
-
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
+
 import Scraping.WikiScraper
 from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
@@ -22,8 +21,8 @@ class ScrapingEngine(object):
         self.urlTitlePrefix = self.baseUrl + '/wikipast/index.php/'
         self.listPage = '/wikipast/index.php/Sp%C3%A9cial:Toutes_les_pages'
 
-    def buildLinkDatabase(self, data, limit=-1):
-        logging.info("Building link database")
+    def buildLinkDatabase(self, data, dateBegin, limit=-1):
+        logging.info("Building link database. Considering modifications since " + dateBegin)
         baseurl = 'http://wikipast.epfl.ch/wikipast/'
 
         protected_logins = ["Frederickaplan", "Maud", "Vbuntinx", "InferenceBot", "Testbot", "IB", "SourceBot", "PageUpdaterBot",
@@ -38,12 +37,9 @@ class ScrapingEngine(object):
                             "Tboyer",
                             "Thierry", "Titi", "Vlaedr", "Wanda"]
 
-        date = datetime.now() - timedelta(days=1)
-        depuis_date = date.strftime('%Y-%m-%dT%H:%M:%SZ')
-
         for user in protected_logins:
             result = requests.post(
-                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&uclimit=100&ucdir=newer&ucstart=' + depuis_date)
+                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&uclimit=100&ucdir=newer&ucstart=' + dateBegin)
             soup = BeautifulSoup(result.content, 'lxml')
 
             for primitive in soup.usercontribs.findAll('item'):
@@ -61,14 +57,14 @@ class ScrapingEngine(object):
         results = Scraping.WikiScraper.run(batch)
         self.objectsDB.joinWith(results)
 
-    def run(self, batchSize=10):
+    def run(self, dateBegin, batchSize=10):
         start = time.time()
         response = urllib.urlopen(self.baseUrl + self.listPage)
 
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
 
-        self.buildLinkDatabase(soup)
+        self.buildLinkDatabase(soup, dateBegin)
 
         urlBatch = list()
         i = 0
@@ -108,4 +104,3 @@ class ScrapingEngine(object):
 if __name__ == '__main__':
     scEng = ScrapingEngine()
     scEng.run()
-

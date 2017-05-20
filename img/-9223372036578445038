@@ -1,0 +1,16 @@
+graph {
+	node [color=black shape=box]
+	"Secundinus Aurelianus"
+	node [color=black shape=box]
+	"Laurentinus Porcius"
+	node [color=black shape=point]
+	9205554160518499882
+		"Secundinus Aurelianus" -- 9205554160518499882
+		"Laurentinus Porcius" -- 9205554160518499882
+	node [color=black shape=box]
+	"Suedia Silius"
+	node [color=black shape=point]
+	-1258783708927200891
+		"Suedia Silius" -- -1258783708927200891
+		"Secundinus Aurelianus" -- -1258783708927200891
+}
