@@ -8,7 +8,7 @@ def test_write_image():
     upload_contents = upload_file.read()
     upload_file.close()
 
-    urls = modifyURLToDiscussion(set(["http://wikipast.epfl.ch/wikipast/index.php/InferenceBot_page_test_-_Secundinus_Aurelianus"]))
+    urls = modifyURLToDiscussion(set(["http://wikipast.epfl.ch/wikipast/index.php/Secundinus_Aurelianus"]))
     for url in urls:
         write_picture_after_title(upload_contents, name,url)
 

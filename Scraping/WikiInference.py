@@ -62,6 +62,9 @@ class BirthInferenceChecker(InferenceChecker):
         self.addFacts(birthsFacts)
         self.addFacts(deathFacts)
 
+        births = list(set(births))
+        deaths = list(set(deaths))
+
         for d in deaths:
             for b in births:
                 self.addFact(d.date.isBeforePredicate(b.date))
