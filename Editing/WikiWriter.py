@@ -32,6 +32,9 @@ def get_page_with_inference(page = writePage, output_title = output_title, outpu
 
     for primitive in soup.findAll("text"):
         code = primitive.string
+        if code is None:
+            code = ""
+
         try:
             indexBeg = code.index(output_title)
         except ValueError:
@@ -44,6 +47,7 @@ def get_page_with_inference(page = writePage, output_title = output_title, outpu
     return ("",)
 
 def get_page_or_create(page = writePage, output_title = output_title, output_foot = output_foot):
+
     value = get_page_with_inference(page, output_title, output_foot)
     if len(value) < 3:
         initialWrite(value[0], page, output_title, output_foot)

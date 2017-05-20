@@ -36,11 +36,11 @@ class ScrapingEngine(object):
                             "QuentinB", "Raphael.barman", "Roblan11", "Romain Fournier", "Sbaaa", "Snus", "Sonia",
                             "Tboyer",
                             "Thierry", "Titi", "Vlaedr", "Wanda"]
-        depuis_date = '2017-05-10T16:00:00Z'
+        depuis_date = '2017-05-19T16:00:00Z'
 
         for user in protected_logins:
             result = requests.post(
-                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&ucend=' + depuis_date)
+                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&uclimit=100&ucdir=newer&ucstart=' + depuis_date)
             soup = BeautifulSoup(result.content, 'lxml')
 
             for primitive in soup.usercontribs.findAll('item'):
