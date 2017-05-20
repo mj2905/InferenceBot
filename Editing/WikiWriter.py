@@ -55,6 +55,11 @@ def get_page_or_create(page = writePage, output_title = output_title, output_foo
     else:
         return value
 
+def delete_on_page_if_exists(page = writePage, output_title = output_title, output_foot = output_foot):
+    value = get_page_with_inference(page, output_title, output_foot)
+    if len(value) >= 3:
+        newText = value[0][:value[1]] + "\n" + value[0][value[2]:]
+        write_on_page(newText, page)
 
 def write_on_page_after_title(text, page = writePage):
     value = get_page_or_create(page)
