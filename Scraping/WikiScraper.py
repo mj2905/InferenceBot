@@ -200,21 +200,21 @@ class BirthScraper(Scraper):
     """
     A Scraper class specialized in scraping births of individuals
     """
-    REGEX = r'Naissance de (?P<name>\w+) (?P<lastName>\w+).'
+
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Naissance de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
     def extract(text):
         entities = set()
         result = re.finditer(BirthScraper.REGEX, text)
         for g in result:
-            name = g.group('name')
-            lastName = g.group('lastName')
+            p = Person(g.group('name'), g.group('lastName'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-            parent = Person(parentName, parentLastName, sex)
-            child = Person(childName, childLastName)
-            parentRelation = Parent(parent, child)
-            entities.add(parentRelation)
-            logging.info("Crafted object: %s", parent)
+            b = Birth(d, l, p)
+            entities.add(b)
+            logging.info("Crafted object: %s", b)
 
         return entities
 
@@ -386,7 +386,7 @@ def run(urlList):
         soup = BeautifulSoup(pageSource, 'lxml')
         soupText = str(soup.text)
 
-        births = scrap_generic(soup, BirthScraper)
+        births = BirthScraper.extract(soupText)
         deaths = scrap_generic(soup, DeathScraper)
         encounters = scrap_generic(soup, EncounterScraper)
         positions = scrap_generic(soup, PositionScraper)
