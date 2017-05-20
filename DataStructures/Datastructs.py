@@ -27,14 +27,28 @@ class Predicateable(metaclass=ABCMeta):
         self.url = url
         pass
 
+
 class Person(Atomiseable):
     """
     Stores the data associated with an individual
     """
 
-    def __init__(self, name, lastname):
+    def __init__(self, name, lastname='', sex=''):
         self.name = name
         self.lastname = lastname
+        self.sex = sex
+        self.name = name
+        self.hasChild = False
+        self.hasParent = False
+        self.childNum = str(hash(self.name))
+
+    def addChild(self):
+        if not self.hasChild:
+            self.hasChild = True
+
+    def addParent(self):
+        if not self.hasParent:
+            self.hasParent = True
 
     def __key(self):
         return (self.name, self.lastname)
@@ -200,6 +214,7 @@ class LifeEvent(Event, metaclass=ABCMeta):
     def toPredicate(self, url):
         return Predicate([self.date.toAtom(), self.location.toAtom(), self.person.toAtom()], self.predicateName, {url})
 
+
 class SocialEvent(Event, metaclass=ABCMeta):
     def __init__(self, date, location, person1, person2, strName, predicateName=None):
         super(SocialEvent, self).__init__(date)
@@ -247,13 +262,21 @@ class Election(LifeEvent):
     def __init__(self, date, location, person):
         super(Election, self).__init__(date, location, person, "Election")
 
+
 class Encounter(SocialEvent):
     def __init__(self, date, location, person1, person2):
         super(Encounter, self).__init__(date, location, person1, person2, "Rencontre")
 
-class Mariage(SocialEvent):
+
+class Wedding(SocialEvent):
     def __init__(self, date, location, person1, person2):
-        super(Mariage, self).__init__(date, location, person1, person2, "Mariage")
+        super(Wedding, self).__init__(date, location, person1, person2, "Mariage")
+
+class Parent:
+    def __init__(self, parent, child):
+        self.parent = parent
+        self.child = child
+
 
 def main():
     pass
@@ -280,7 +303,6 @@ class WikiData:
         self.data = set()
 
 
-
 class WikiPage:
     def __init__(self, url):
         self.deaths = set()
@@ -290,16 +312,18 @@ class WikiPage:
         self.elections = set()
         self.weddings = set()
         self.divorces = set()
+        self.parents = set()
         self.url = url
 
-    def addData(self, deaths, births, encounters, positions, elections, weddings):
+    def addData(self, deaths, births, encounters, positions, elections, weddings, parents):
         self.deaths |= deaths
         self.births |= births
         self.encounters |= encounters
         self.positions |= positions
         self.elections |= elections
         self.weddings |= weddings
-        #self.divorces |= divorces
+        self.parents |= parents
+        # self.divorces |= divorces
 
     def __str__(self):
         resStr = []
