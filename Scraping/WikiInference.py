@@ -27,7 +27,7 @@ class InferenceChecker(metaclass=ABCMeta):
         self.bc.addFacts(facts)
 
     @abstractmethod
-    def checkIfErrors(self):
+    def checkIfErrors(self, resData):
         pass
 
 
@@ -270,6 +270,7 @@ class ElectionAftDeathInferenceChecker(InferenceChecker):
         print(len(self.bc.facts))
         return self.moteur.chain()
 
+"""
 class MariageInferenceChecker(InferenceChecker):
     def __init__(self, facts=None):
         super().__init__(WikiRules.MARIAGE_RULES, facts)
@@ -314,6 +315,74 @@ class MariageInferenceChecker(InferenceChecker):
             for b in births:
                 if m.person1 == b.person or m.person2 == b.person :
                     self.addFact(m.date.isBeforePredicate(b.date))
+
+        return self.moteur.chain()
+
+"""
+
+class MariageBefBirthInferenceChecker(InferenceChecker):
+    def __init__(self, facts=None):
+        super().__init__(WikiRules.MARIAGE_BEFORE_BIRTH, facts)
+
+    def checkIfErrors(self, resData):
+
+        mariagesFacts = []
+        birthsFacts = []
+
+        mariages = []
+        births = []
+
+        for page in resData.data:
+
+            weddingsWithoutNone = list(filter(lambda x: x is not None,page.weddings))
+            birthsWithoutNone = list(filter(lambda x: x is not None,page.births))
+
+            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), weddingsWithoutNone)))
+            mariages.extend(weddingsWithoutNone)
+            birthsFacts.extend(list(map(lambda x: x.toPredicate(page.url), birthsWithoutNone)))
+            births.extend(birthsWithoutNone)
+
+        self.addFacts(mariagesFacts)
+        self.addFacts(birthsFacts)
+
+
+        for m in mariages:
+            for b in births:
+                if m.person1 == b.person or m.person2 == b.person :
+                    self.addFact(m.date.isBeforePredicate(b.date))
+
+        return self.moteur.chain()
+
+class MariageAftDeathInferenceChecker(InferenceChecker):
+    def __init__(self, facts=None):
+        super().__init__(WikiRules.MARIAGE_AFTER_DEATH, facts)
+
+    def checkIfErrors(self, resData):
+
+        mariagesFacts = []
+        deathFacts = []
+
+        mariages = []
+        deaths = []
+
+        for page in resData.data:
+
+            weddingsWithoutNone = list(filter(lambda x: x is not None,page.weddings))
+            deathsWithoutNone = list(filter(lambda x: x is not None, page.deaths))
+
+            mariagesFacts.extend(list(map(lambda x: x.toPredicate(page.url), weddingsWithoutNone)))
+            mariages.extend(weddingsWithoutNone)
+            deathFacts.extend(list(map(lambda x: x.toPredicate(page.url), deathsWithoutNone)))
+            deaths.extend(deathsWithoutNone)
+
+        self.addFacts(mariagesFacts)
+        self.addFacts(deathFacts)
+
+
+        for m in mariages:
+            for d in deaths:
+                if m.person1 == d.person or m.person2 == d.person :
+                    self.addFact(d.date.isBeforePredicate(m.date))
 
         return self.moteur.chain()
 

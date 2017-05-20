@@ -12,7 +12,8 @@ def write_inferences(resData, allLinks):
     encounter_facts = EncounterInferenceChecker()
     election_bef_birth_facts = ElectionBefBirthInferenceChecker()
     election_aft_death_facts = ElectionAftDeathInferenceChecker()
-    #mariage_facts = MariageInferenceChecker()
+    mariage_bef_birth_facts = MariageBefBirthInferenceChecker()
+    mariage_aft_death_facts = MariageAftDeathInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
 
     wikiGenalogyTree = WikiGenealogyTree()
@@ -25,7 +26,8 @@ def write_inferences(resData, allLinks):
     list_encounter_facts = encounter_facts.checkIfErrors(resData)
     list_election_bef_birth_facts = election_bef_birth_facts.checkIfErrors(resData)
     list_election_aft_death_facts = election_aft_death_facts.checkIfErrors(resData)
-    #list_mariage_facts = mariage_facts.checkIfErrors(resData)
+    list_mariage_bef_birth_facts = mariage_bef_birth_facts.checkIfErrors(resData)
+    list_mariage_aft_death_facts = mariage_aft_death_facts.checkIfErrors(resData)
     list_divorce_facts = divorce_facts.checkIfErrors(resData)
 
     list_facts = []
@@ -41,8 +43,10 @@ def write_inferences(resData, allLinks):
         list_facts.extend(list_election_bef_birth_facts)
     if list_election_aft_death_facts is not None:
         list_facts.extend(list_election_aft_death_facts)
-    #if list_mariage_facts is not None:
-        #list_facts.extend(list_mariage_facts)
+    if list_mariage_bef_birth_facts is not None:
+        list_facts.extend(list_mariage_bef_birth_facts)
+    if list_mariage_aft_death_facts is not None:
+        list_facts.extend(list_mariage_aft_death_facts)
     if list_divorce_facts is not None:
         list_facts.extend(list_divorce_facts)
 
