@@ -17,37 +17,38 @@ class WikiGraph(metaclass=ABCMeta):
         pass
 
 
-class WikiGenalogyTree(WikiGraph):
+class WikiGenealogyTree(WikiGraph):
     def __init__(self):
         super().__init__()
         self.members = set()
 
     def addData(self, resData):
-        families = set()
+        members = set()
         for page in resData.data:
             temp = list(filter(lambda x: x is not None, page.weddings))
             if temp:
                 for elem in temp:
-                    families.add(elem)
+                    members.add((elem, page.url))
         for page in resData.data:
             temp = list(filter(lambda x: x is not None, page.parents))
             if temp:
                 for elem in temp:
-                    families.add(elem)
+                    members.add((elem, page.url))
 
-        self.members = families
+        self.members = members
 
     def generateGraph(self):
         graphs = self.connected_components()
         for graph in graphs:
             g = GenealogyTreeGenerator()
-            for elem in graph:
+            for elem, url in graph:
                 if type(elem) == Wedding:
                     g.addPartner(elem.person1, elem.person2)
                 elif type(elem) == Parent:
                     g.addChild(elem.person1, elem.person2)
+                g.addUrl(url)
 
-            g.render('img/' + str(hash(g)))
+            self.graphs.append(g)
 
     # The function to look for connected components.
     def connected_components(self):
@@ -72,9 +73,10 @@ class WikiGenalogyTree(WikiGraph):
 
         return result
 
-    def links(self, elem):
+    def links(self, elemUrl):
+        elem, url = elemUrl
         res = set()
-        for member in self.members:
+        for member, url in self.members:
             if not elem.__eq__(member) and (elem.person1 in member.members() or elem.person2 in member.members()):
-                res.add(member)
+                res.add((member, url))
         return res

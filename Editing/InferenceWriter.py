@@ -1,6 +1,6 @@
 from Editing.PrettyPrinter import pretty
 from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists
-from Scraping.WikiGraph import WikiGenalogyTree
+from Scraping.WikiGraph import WikiGenealogyTree
 from Scraping.WikiInference import *
 
 
@@ -12,7 +12,7 @@ def write_inferences(resData):
     mariage_facts = MariageInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
 
-    wikiGenalogyTree = WikiGenalogyTree()
+    wikiGenalogyTree = WikiGenealogyTree()
     wikiGenalogyTree.addData(resData)
     wikiGenalogyTree.generateGraph()
 
