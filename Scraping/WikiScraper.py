@@ -272,7 +272,6 @@ class EncounterScraper(Scraper):
         tmp = Scraper.binaryEventExtractor(s, WikiStrings.ENCOUNTER_TODISCARD, WikiStrings.ENCOUNTER)
         return None if tmp is None else Encounter(*tmp)
 
-
 class ElectionScraper(Scraper):
     """
     A Scapper class psecialized in scrapping elections of individuals
@@ -373,10 +372,10 @@ def run(urlList):
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
-        parent = set()
+        parents = set()
 
         wikiPage = WikiPage(urlList.__getitem__(i))
-        wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parent)
+        wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parents)
         resData.add(wikiPage)
 
     return resData

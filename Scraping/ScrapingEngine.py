@@ -3,9 +3,10 @@ import re
 import time
 import urllib.request as urllib
 
+
 import requests
 from bs4 import BeautifulSoup
-
+from datetime import datetime, timedelta
 import Scraping.WikiScraper
 from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
@@ -36,7 +37,9 @@ class ScrapingEngine(object):
                             "QuentinB", "Raphael.barman", "Roblan11", "Romain Fournier", "Sbaaa", "Snus", "Sonia",
                             "Tboyer",
                             "Thierry", "Titi", "Vlaedr", "Wanda"]
-        depuis_date = '2017-05-19T16:00:00Z'
+
+        date = datetime.now() - timedelta(days=1)
+        depuis_date = date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         for user in protected_logins:
             result = requests.post(
@@ -105,3 +108,4 @@ class ScrapingEngine(object):
 if __name__ == '__main__':
     scEng = ScrapingEngine()
     scEng.run()
+

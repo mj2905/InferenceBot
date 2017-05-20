@@ -1,25 +1,25 @@
 from Editing.PrettyPrinter import pretty
 from Editing.WikiWriter import write_on_page_after_title
 from Scraping.WikiGraph import WikiGenalogyTree
-from Scraping.WikiInference import BirthInferenceChecker, EncounterInferenceChecker, ElectionInferenceChecker, \
-    MariageInferenceChecker, DivorceInferenceChecker
+from Scraping.WikiInference import *
 
 
 def write_inferences(resData):
-    mariage_facts = MariageInferenceChecker()
+
     birth_facts = BirthInferenceChecker()
     encounter_facts = EncounterInferenceChecker()
     election_facts = ElectionInferenceChecker()
+    mariage_facts = MariageInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
 
     wikiGenalogyTree = WikiGenalogyTree()
     wikiGenalogyTree.addData(resData)
     wikiGenalogyTree.generateGraph()
 
-    list_mariage_facts = mariage_facts.checkIfErrors(resData)
     list_birth_facts = birth_facts.checkIfErrors(resData)
     list_encounter_facts = encounter_facts.checkIfErrors(resData)
     list_election_facts = election_facts.checkIfErrors(resData)
+    list_mariage_facts = mariage_facts.checkIfErrors(resData)
     list_divorce_facts = divorce_facts.checkIfErrors(resData)
 
     list_facts = []
