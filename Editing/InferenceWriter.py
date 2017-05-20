@@ -7,9 +7,12 @@ from Scraping.WikiInference import *
 def write_inferences(resData, allLinks):
 
     birth_facts = BirthInferenceChecker()
+    multibirth_facts = MultiBirthInferenceChecker()
+    multideath_facts = MultiDeathInferenceChecker()
     encounter_facts = EncounterInferenceChecker()
-    election_facts = ElectionInferenceChecker()
-    mariage_facts = MariageInferenceChecker()
+    election_bef_birth_facts = ElectionBefBirthInferenceChecker()
+    election_aft_death_facts = ElectionAftDeathInferenceChecker()
+    #mariage_facts = MariageInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
 
     wikiGenalogyTree = WikiGenalogyTree()
@@ -17,20 +20,29 @@ def write_inferences(resData, allLinks):
     wikiGenalogyTree.generateGraph()
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
+    list_multibirth_facts = multibirth_facts.checkIfErrors(resData)
+    list_multideath_facts = multideath_facts.checkIfErrors(resData)
     list_encounter_facts = encounter_facts.checkIfErrors(resData)
-    list_election_facts = election_facts.checkIfErrors(resData)
-    list_mariage_facts = mariage_facts.checkIfErrors(resData)
+    list_election_bef_birth_facts = election_bef_birth_facts.checkIfErrors(resData)
+    list_election_aft_death_facts = election_aft_death_facts.checkIfErrors(resData)
+    #list_mariage_facts = mariage_facts.checkIfErrors(resData)
     list_divorce_facts = divorce_facts.checkIfErrors(resData)
 
     list_facts = []
     if list_birth_facts is not None:
         list_facts.extend(list_birth_facts)
+    if list_multibirth_facts is not None:
+        list_facts.extend(list_multibirth_facts)
+    if list_multideath_facts is not None:
+        list_facts.extend(list_multideath_facts)
     if list_encounter_facts is not None:
         list_facts.extend(list_encounter_facts)
-    if list_election_facts is not None:
-        list_facts.extend(list_election_facts)
-        #  if list_mariage_facts is not None:
-        #     list_facts.extend(list_mariage_facts)
+    if list_election_bef_birth_facts is not None:
+        list_facts.extend(list_election_bef_birth_facts)
+    if list_election_aft_death_facts is not None:
+        list_facts.extend(list_election_aft_death_facts)
+    #if list_mariage_facts is not None:
+        #list_facts.extend(list_mariage_facts)
     if list_divorce_facts is not None:
         list_facts.extend(list_divorce_facts)
 

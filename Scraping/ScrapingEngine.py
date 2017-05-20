@@ -40,7 +40,7 @@ class ScrapingEngine(object):
 
         for user in protected_logins:
             result = requests.post(
-                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&uclimit=100&ucdir=newer&ucstart=' + dateBegin)
+                baseurl + 'api.php?action=query&list=usercontribs&ucuser=' + user + '&format=xml&uclimit=500&ucdir=newer&ucstart=' + dateBegin)
             soup = BeautifulSoup(result.content, 'lxml')
 
             for primitive in soup.usercontribs.findAll('item'):
