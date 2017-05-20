@@ -125,7 +125,7 @@ def infer(*args):
         print("Please run wiki scraping first")
         return
 
-    write_inferences(se.getResultSet())
+    write_inferences(se.getResultSet(), se.linksDB)
 
 
 def shutdown(*args):
@@ -148,6 +148,14 @@ def die(*args):
     time.sleep(1)
     sys.exit(0)
 
+def help(*args):
+    print("Commands available :")
+    print("scrape")
+    print("infer")
+    print("autorun")
+    print("stop")
+    print("shutdown")
+
 
 GREET = 'InferenceBot is at your service'
 PROMPT = 'InferenceBot > '
@@ -157,7 +165,7 @@ yesterday = date.today() - timedelta(1)
 scrapeBeginDate = yesterday
 currentTask = None
 killPill = threading.Event()
-command_list = [hello, hi, thanks, scrape, infer, autorun, stop, shutdown, die]
+command_list = [hello, hi, thanks, scrape, infer, autorun, stop, shutdown, die, help]
 commands = {f.__name__: f for f in command_list}
 
 se = ScrapingEngine()

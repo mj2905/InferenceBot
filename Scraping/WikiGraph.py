@@ -50,6 +50,7 @@ class WikiGenealogyTree(WikiGraph):
 
             self.graphs.append(g)
 
+
     # The function to look for connected components.
     def connected_components(self):
 

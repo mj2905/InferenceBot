@@ -12,6 +12,7 @@ from Scraping.WikiStrings import validWikiUrl
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
+discussionTag = "Discussion:"
 
 class ScrapingEngine(object):
     def __init__(self):
@@ -43,8 +44,8 @@ class ScrapingEngine(object):
             soup = BeautifulSoup(result.content, 'lxml')
 
             for primitive in soup.usercontribs.findAll('item'):
-                self.linksDB.add(''.join([self.urlTitlePrefix, re.sub('\s+', '_', str(primitive['title']))]))
-                # print(primitive['title'])
+                if discussionTag not in primitive['title']:
+                    self.linksDB.add(''.join([self.urlTitlePrefix, re.sub('\s+', '_', str(primitive['title']))]))
 
         for link in self.linksDB:
             logging.info("%s", link)
