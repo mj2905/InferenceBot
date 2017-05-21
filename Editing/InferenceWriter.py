@@ -9,7 +9,6 @@ from Scraping.WikiInference import *
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 def write_inferences(resData, allLinks):
-
     birth_facts = BirthInferenceChecker()
     multibirth_facts = MultiBirthInferenceChecker()
     multideath_facts = MultiDeathInferenceChecker()
@@ -90,7 +89,7 @@ def writeGraphs(resData, allLinks):
     #renderAndUploadsPictures
     #we then have a collection with for each link every picture it's linked with
     for graph in wikiGenealogyTree.graphs:
-        code = str(hash(frozenset(graph.urls)))
+        code = str(hash(graph))
 
         uploadName = "Family_Tree_" + code + ".png"
 
