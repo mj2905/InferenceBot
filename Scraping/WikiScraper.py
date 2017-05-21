@@ -291,18 +291,22 @@ class ElectionScraper(Scraper):
     A Scapper class psecialized in scrapping elections of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.ELECTION
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Election de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.ELECTION)
+    def extract(text):
+        entities = set()
+        result = re.finditer(ElectionScraper.REGEX, text)
+        for g in result:
+            p = Person(g.group('name'), g.group('lastName'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.unaryEventExtractor(s, WikiStrings.ELECTION_TODISCARD, WikiStrings.ELECTION)
-        return None if tmp is None else Election(*tmp)
+            e = Election(d, l, p)
+            entities.add(e)
+            logging.info("Crafted object: %s", e)
+
+        return entities
 
 
 class MariageScraper(Scraper):
@@ -310,18 +314,23 @@ class MariageScraper(Scraper):
     A Scapper class specialized in scrapping mariage of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.MARIAGE
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Mariage de (?P<name1>\w+) (?P<lastName1>\w+) avec (?P<name2>\w+) (?P<lastName2>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.MARIAGE)
+    def extract(text):
+        entities = set()
+        result = re.finditer(MariageScraper.REGEX, text)
+        for g in result:
+            p1 = Person(g.group('name1'), g.group('lastName1'))
+            p2 = Person(g.group('name2'), g.group('lastName2'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.binaryEventExtractor(s, WikiStrings.MARIAGE_TODISCARD, WikiStrings.MARIAGE)
-        return None if tmp is None else Wedding(*tmp)
+            w = Wedding(d, l, p1, p2)
+            entities.add(w)
+            logging.info("Crafted object: %s", w)
+
+        return entities
 
 
 class ParentScraper(Scraper):
@@ -399,8 +408,8 @@ def run(urlList):
         deaths = DeathScraper.extract(soupText)
         encounters = EncounterScraper.extract(soupText)
         positions = scrap_generic(soup, PositionScraper)
-        elections = scrap_generic(soup, ElectionScraper)
-        mariages = scrap_generic(soup, MariageScraper)
+        elections = ElectionScraper.extract(soupText)
+        mariages = MariageScraper.extract(soupText)
         parents = ParentScraper.extract(soupText)
 
         wikiPage = WikiPage(urlList.__getitem__(i))
