@@ -21,7 +21,7 @@ def write_inferences(resData, allLinks):
     divorce_facts = DivorceInferenceChecker()
 
     logging.info("Building images")
-    writeGraphs(resData)
+    writeGraphs(resData, allLinks)
     logging.info("Building facts")
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
