@@ -4,13 +4,13 @@ import graphviz as gv
 class GenealogyTreeGenerator:
     def __init__(self, urls=None):
         if urls is None:
-            urls = []
+            urls = set()
         self.graph = gv.Graph(format='png')
         self.members = []
         self.urls = urls
 
     def addUrl(self, url):
-        self.urls.extend(url)
+        self.urls.add(url)
 
     def addMember(self, person):
 

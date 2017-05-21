@@ -9,7 +9,7 @@ def modifyURLToDiscussion(urls):
         result.add("Discussion:" + url[i+1:])
     return result
 
-def pretty(list_facts):
+def pretty(list_facts, allLinks):
     list_pretty = []
     pagesWithSomething = set()
 
@@ -45,8 +45,7 @@ def pretty(list_facts):
             list_pretty.append((string, modifyURLToDiscussion(elem.urls)))
             pagesWithSomething = pagesWithSomething.union(elem.urls)
 
-    pagesWithNothing = set([filteredUrl for fact in list_facts
-                                            for url in fact.urls if url not in pagesWithSomething
+    pagesWithNothing = set([filteredUrl for url in allLinks if url not in pagesWithSomething
                                             for filteredUrl in modifyURLToDiscussion(set([url]))])
 
     return (list_pretty, pagesWithNothing)
