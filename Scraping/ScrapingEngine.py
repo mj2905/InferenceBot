@@ -51,7 +51,7 @@ class ScrapingEngine(object):
             logging.info("%s", link)
 
         # Validate links
-        self.linksDB = [x for x in self.linksDB if validWikiUrl(x)]
+        self.linksDB = set([x for x in self.linksDB if validWikiUrl(x)])
 
     def processUrlBatch(self, batch):
         logging.info("Attempting to scrape: %s", batch)

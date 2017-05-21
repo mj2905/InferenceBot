@@ -41,12 +41,25 @@ class WikiGenealogyTree(WikiGraph):
         graphs = self.connected_components()
         for graph in graphs:
             g = GenealogyTreeGenerator()
+            addedItems = set()
+            childItems = set()
             for elem, url in graph:
-                if type(elem) == Wedding:
-                    g.addPartner(elem.person1, elem.person2)
-                elif type(elem) == Parent:
-                    g.addChild(elem.person1, elem.person2)
+                if elem not in addedItems:
+                    if type(elem) == Wedding:
+                        g.addPartner(elem.person1, elem.person2)
+                    elif type(elem) == Parent:
+
+                        alreadyChild = False
+
+                        for parent, child in childItems:
+                            if child == elem.person2:
+                                alreadyChild = True
+                        if not alreadyChild:
+                            childItems.add((elem.person1, elem.person2))
+                    addedItems.add(elem)
                 g.addUrl(url)
+            for p1, p2 in childItems:
+                g.addChild(p1, p2)
 
             self.graphs.append(g)
 

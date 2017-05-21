@@ -66,7 +66,12 @@ class GenealogyTreeGenerator:
             self.graph.edge(nameParent, parent.childNum)
             parent.addChild()
 
-        self.graph.edge(parent.childNum, nameChild)
+        if not child.hasParent:
+            self.graph.edge(parent.childNum, nameChild)
+            child.addParent()
 
     def render(self, filename):
         self.graph.render(filename)
+
+    def pipe(self):
+        return self.graph.pipe()

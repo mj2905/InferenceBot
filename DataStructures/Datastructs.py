@@ -71,7 +71,7 @@ class Location(Atomiseable):
     Stores the data associated with a location
     """
 
-    def __init__(self, name):
+    def __init__(self, name=""):
         self.name = name
 
     def __key(self):
@@ -172,7 +172,6 @@ class Event(Predicateable):
     """
     Stores the data about a historical event.
     """
-
     def __init__(self, date):
         """
 
@@ -278,7 +277,7 @@ class Wedding(SocialEvent):
 
 class Parent(SocialEvent):
     def __init__(self, person1, person2):
-        super(Parent, self).__init__(None, None, person1, person2, "Parent")
+        super(Parent, self).__init__(Date(), Location(), person1, person2, "Parent")
 
 
 def main():

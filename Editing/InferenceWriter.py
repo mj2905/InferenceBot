@@ -1,5 +1,5 @@
-from Editing.PrettyPrinter import pretty
-from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists
+from Editing.PrettyPrinter import pretty, modifyURLToDiscussion
+from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists, write_picture_after_title
 from Scraping.WikiGraph import WikiGenealogyTree
 from Scraping.WikiInference import *
 
@@ -16,9 +16,7 @@ def write_inferences(resData, allLinks):
     mariage_aft_death_facts = MariageAftDeathInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
 
-    wikiGenalogyTree = WikiGenealogyTree()
-    wikiGenalogyTree.addData(resData)
-    wikiGenalogyTree.generateGraph()
+    writeGraphs(resData)
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
     list_multibirth_facts = multibirth_facts.checkIfErrors(resData)
@@ -73,3 +71,22 @@ def writeOnPages(factsWithPages):
 
         s = '\n* '.join(tail)
         write_on_page_after_title(s, k)
+
+
+def writeGraphs(resData):
+    wikiGenealogyTree = WikiGenealogyTree()
+    wikiGenealogyTree.addData(resData)
+    wikiGenealogyTree.generateGraph()
+
+    for graph in wikiGenealogyTree.graphs:
+        code = str(hash(tuple(graph.urls)))
+        name = 'img/' + code
+
+        graph.render(name)
+        upload_file = open(name + '.png', "rb")
+        upload_contents = upload_file.read()
+        upload_file.close()
+
+        urls = modifyURLToDiscussion(graph.urls)
+        for url in urls:
+            write_picture_after_title(upload_contents, "Family_Tree_" + code + ".png", url)
