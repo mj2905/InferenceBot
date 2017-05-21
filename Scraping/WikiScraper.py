@@ -139,7 +139,7 @@ class BirthScraper(Scraper):
     A Scraper class specialized in scraping births of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>[-\w]+). Naissance de (?P<name>[-\w]+) (?P<lastName>[-\w]+).'
+    REGEX = DATE_AND_LOC_REGEX + '\s+Naissance\s+(de|d\')\s*(?P<name>[-\w]+)\s+(?P<lastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -166,7 +166,7 @@ class DeathScraper(Scraper):
     A Scraper class specialized in scraping deaths of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>[-\w]+). (Décès|Mort) de (?P<name>[-\w]+) (?P<lastName>[-\w]+).'
+    REGEX = DATE_AND_LOC_REGEX + '\s+(Décès|Mort)\s+(de|d\')\s*(?P<name>[-\w]+)\s+(?P<lastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -213,7 +213,7 @@ class EncounterScraper(Scraper):
     A Scraper class specialized in scraping encounter between two individuals
     """
 
-    REGEX = DATE_AND_LOC_REGEX + '\s+Rencontre\s+(de|entre)\s+(?P<name1>[-\w]+)\s+(?P<lastName1>[-\w]+)\s+(et|avec)\s+(?P<name2>[-\w]+)\s+(?P<lastName2>[-\w]+)'
+    REGEX = DATE_AND_LOC_REGEX + '\s+Rencontre\s+(de|entre)\s+(?P<name1>[-\w]+)\s+(?P<lastName1>[-\w]+)\s+(et|avec)\s+(?P<name2>[-\w]+)\s+(?P<lastName2>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -241,7 +241,7 @@ class ElectionScraper(Scraper):
     A Scapper class psecialized in scrapping elections of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>[-\w]+). Election de (?P<name>[-\w]+) (?P<lastName>[-\w]+).'
+    REGEX = DATE_AND_LOC_REGEX + '\s+Election\s+de\s+(?P<name>[-\w]+)\s+(?P<lastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -268,7 +268,7 @@ class MariageScraper(Scraper):
     A Scapper class specialized in scrapping mariage of individuals
     """
 
-    REGEX = DATE_AND_LOC_REGEX + '\s+Mariage\s+(de|d\')\s*(?P<name1>[-\w]+)\s+(?P<lastName1>[-\w]+)\s+(avec|et|et d\')\s*(?P<name2>[-\w]+)\s+(?P<lastName2>[-\w]+)'
+    REGEX = DATE_AND_LOC_REGEX + '\s+Mariage\s+(de|d\')\s*(?P<name1>[-\w]+)\s+(?P<lastName1>[-\w]+)\s+(avec|et|et d\')\s*(?P<name2>[-\w]+)\s+(?P<lastName2>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -295,7 +295,7 @@ class ParentScraper(Scraper):
     """
     A Scapper class specialized in scrapping parent-child relationships
     """
-    REGEX = r'((?P<male>Le père de)|(?P<female>La mère de)) (?P<childName>[-\w]+) (?P<childLastName>[-\w]+) est (?P<parentName>[-\w]+) (?P<parentLastName>[-\w]+).'
+    REGEX = r'((?P<male>Le\s+père\s+de)|(?P<female>La\s+mère\s+de))\s+(?P<childName>[-\w]+)\s+(?P<childLastName>[-\w]+)\s+est\s+(?P<parentName>[-\w]+)\s+(?P<parentLastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -378,5 +378,4 @@ def run(urlList):
 
 
 if __name__ == '__main__':
-    run(["http://wikipast.epfl.ch/wikipast/index.php/Mariage"])
-    run(["http://wikipast.epfl.ch/wikipast/index.php/Rencontre"])
+    run(["http://wikipast.epfl.ch/wikipast/index.php/Naissance"])
