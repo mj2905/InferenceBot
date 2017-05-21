@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from DataStructures.Datastructs import *
 from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
-from Scraping.WikiStrings import translationTable
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -133,86 +132,28 @@ class Scraper(metaclass=ABCMeta):
 
         return d, l, p
 
-    @staticmethod
-    def binaryEventExtractor(s, stringsToDiscard, eventName):
-        """
-        The usual binary event format is the following:
-
-        Date / Location. Event X [for/from/of] Person Y [with/and] Person Z.
-
-        The line is first split at '/' to retrieve the date, then at the first dot to retrieve the location and
-        finally splits the remaining string at each space. The resulting list is filtered according to the list of
-        words to discard as given in the WikiStrings file and the event object is created with the remaining data.
-        If the remaining data does not math the format expected it is discarded and the entry is logged.
-
-        :param s: The string entry from which to extract the event.
-        :param stringsToDiscard: The constant list of string to discard from the event entry.
-        :param eventName: The name of the event. (For logging purposes)
-        :return: A tuple (Date, Location, Person1, Person2) which can be used to create the event
-        """
-        BAD_FORMAT = ''.join(
-            ["The scraper discarded a candidate ", eventName,
-             " because it did not have the correct format. ",
-             "The discarded entry is %s"])
-
-        if (s.endswith(".")):
-            s = s[:-1]
-
-        dateRes = s.split("/")
-
-        if len(dateRes) != 2:
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        dateRes[0] = dateRes[0].translate(dateTranslationTable).strip()
-
-        if dateRes[0] == '':
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        date, locAndPeople = dateRes[0], dateRes[1]
-
-        locRes = locAndPeople.split(".", 1)  # Specify at most 1 split to retrieve location
-
-        if (len(locRes) < 2):
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        location, people = locRes[0], locRes[1]
-
-        # Extract only people's names. The translation removes unwanted characters from the string
-        people = people.translate(translationTable).strip().split(" ")
-        people = [x for x in people if x not in stringsToDiscard]
-
-        if (len(people) < 4):
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        p1 = Person(people[0], people[1])
-        p2 = Person(people[2], people[3])
-        d = Date.extractDate(date)
-        l = Location(location)
-
-        return d, l, p1, p2
-
 
 class BirthScraper(Scraper):
     """
     A Scraper class specialized in scraping births of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.BIRTH
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Naissance de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.BIRTH)
+    def extract(text):
+        entities = set()
+        result = re.finditer(BirthScraper.REGEX, text)
+        for g in result:
+            p = Person(g.group('name'), g.group('lastName'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.unaryEventExtractor(s, WikiStrings.BIRTH_TODISCARD, WikiStrings.BIRTH)
-        return None if tmp is None else Birth(*tmp)
+            b = Birth(d, l, p)
+            entities.add(b)
+            logging.info("Crafted object: %s", b)
+
+        return entities
 
 
 class DeathScraper(Scraper):
@@ -220,18 +161,22 @@ class DeathScraper(Scraper):
     A Scraper class specialized in scraping deaths of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.DEATH
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). (Décès|Mort) de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.DEATH)
+    def extract(text):
+        entities = set()
+        result = re.finditer(DeathScraper.REGEX, text)
+        for g in result:
+            p = Person(g.group('name'), g.group('lastName'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.unaryEventExtractor(s, WikiStrings.DEATH_TODISCARD, WikiStrings.DEATH)
-        return None if tmp is None else Death(*tmp)
+            death = Death(d, l, p)
+            entities.add(death)
+            logging.info("Crafted object: %s", death)
+
+        return entities
 
 
 class PositionScraper(Scraper):
@@ -259,36 +204,46 @@ class EncounterScraper(Scraper):
     A Scraper class specialized in scraping encounter between two individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.ENCOUNTER
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Rencontre de (?P<name1>\w+) (?P<lastName1>\w+) avec (?P<name2>\w+) (?P<lastName2>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.ENCOUNTER)
+    def extract(text):
+        entities = set()
+        result = re.finditer(EncounterScraper.REGEX, text)
+        for g in result:
+            p1 = Person(g.group('name1'), g.group('lastName1'))
+            p2 = Person(g.group('name2'), g.group('lastName2'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.binaryEventExtractor(s, WikiStrings.ENCOUNTER_TODISCARD, WikiStrings.ENCOUNTER)
-        return None if tmp is None else Encounter(*tmp)
+            e = Encounter(d, l, p1, p2)
+            entities.add(e)
+            logging.info("Crafted object: %s", e)
+
+        return entities
+
 
 class ElectionScraper(Scraper):
     """
     A Scapper class psecialized in scrapping elections of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.ELECTION
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Election de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.ELECTION)
+    def extract(text):
+        entities = set()
+        result = re.finditer(ElectionScraper.REGEX, text)
+        for g in result:
+            p = Person(g.group('name'), g.group('lastName'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.unaryEventExtractor(s, WikiStrings.ELECTION_TODISCARD, WikiStrings.ELECTION)
-        return None if tmp is None else Election(*tmp)
+            e = Election(d, l, p)
+            entities.add(e)
+            logging.info("Crafted object: %s", e)
+
+        return entities
 
 
 class MariageScraper(Scraper):
@@ -296,18 +251,23 @@ class MariageScraper(Scraper):
     A Scapper class specialized in scrapping mariage of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.MARIAGE
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Mariage de (?P<name1>\w+) (?P<lastName1>\w+) avec (?P<name2>\w+) (?P<lastName2>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.MARIAGE)
+    def extract(text):
+        entities = set()
+        result = re.finditer(MariageScraper.REGEX, text)
+        for g in result:
+            p1 = Person(g.group('name1'), g.group('lastName1'))
+            p2 = Person(g.group('name2'), g.group('lastName2'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.binaryEventExtractor(s, WikiStrings.MARIAGE_TODISCARD, WikiStrings.MARIAGE)
-        return None if tmp is None else Wedding(*tmp)
+            w = Wedding(d, l, p1, p2)
+            entities.add(w)
+            logging.info("Crafted object: %s", w)
+
+        return entities
 
 
 class ParentScraper(Scraper):
@@ -341,7 +301,6 @@ class ParentScraper(Scraper):
             logging.info("Crafted object: %s", parent)
 
         return entities
-
 
 
 def processUrl(url, responses, i):
@@ -380,13 +339,15 @@ def run(urlList):
 
         pageSource = response.read()
         soup = BeautifulSoup(pageSource, 'lxml')
-        births = scrap_generic(soup, BirthScraper)
-        deaths = scrap_generic(soup, DeathScraper)
-        encounters = scrap_generic(soup, EncounterScraper)
+        soupText = str(soup.text)
+
+        births = BirthScraper.extract(soupText)
+        deaths = DeathScraper.extract(soupText)
+        encounters = EncounterScraper.extract(soupText)
         positions = scrap_generic(soup, PositionScraper)
-        elections = scrap_generic(soup, ElectionScraper)
-        mariages = scrap_generic(soup, MariageScraper)
-        parents = ParentScraper.extract(str(soup.text))
+        elections = ElectionScraper.extract(soupText)
+        mariages = MariageScraper.extract(soupText)
+        parents = ParentScraper.extract(soupText)
 
         wikiPage = WikiPage(urlList.__getitem__(i))
         wikiPage.addData(deaths, births, encounters, positions, elections, mariages, parents)
@@ -396,4 +357,5 @@ def run(urlList):
 
 
 if __name__ == '__main__':
-    run()
+
+    run(["http://wikipast.epfl.ch/wikipast/index.php/Secundinus_Aurelianus"])

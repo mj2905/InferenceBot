@@ -41,9 +41,9 @@ DIVORCE = "Divorce"
 
 POSITION = "Position"
 
-father = "père"
-grandfather = "grand-père"
-son = "fils"
+FATHER = "père"
+GRANDFATHER = "grand-père"
+SON = "fils"
 
 ERROR_DATE = "Erreur de date"
 ERROR_BIRTH = "Plusieurs naissances"
