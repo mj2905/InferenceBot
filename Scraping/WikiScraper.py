@@ -9,7 +9,7 @@ from DataStructures.Datastructs import *
 from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.ERROR)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 
 def scrap_generic(data, scraper):

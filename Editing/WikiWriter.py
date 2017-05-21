@@ -111,10 +111,11 @@ def write_picture_on_wiki(picture, pictureName):
     r4 = requests.post(baseurl + 'api.php', data=payload, files=files, cookies=edit_cookie)
 
 #pictureName needs to have the extension
-def write_picture_after_title(pictureName, page = writePage):
+def write_picture_after_title(pictureNames, page = writePage):
 
     value = get_page_or_create(page, picture_title, picture_foot)
-    p = value[0][:value[1]] + "\n [[Fichier:" + pictureName + "]] \n" + value[0][value[2]:]
+
+    p = value[0][:value[1]] + "\n" + '\n'.join(list(map(lambda pictureName: "[[Fichier:" + pictureName + "]]", pictureNames))) + '\n' + value[0][value[2]:]
     write_on_page(p, page)
 
 

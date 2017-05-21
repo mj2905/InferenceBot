@@ -11,7 +11,7 @@ import Scraping.WikiScraper
 from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.ERROR)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 discussionTag = "Discussion:"
 fichierTag = "Fichier:"

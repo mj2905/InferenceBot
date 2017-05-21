@@ -79,10 +79,14 @@ def writeGraphs(resData):
     wikiGenealogyTree.addData(resData)
     wikiGenealogyTree.generateGraph()
 
+    name = 'img/bufferForLocalGenealogyPictures'
+    urlWithImages = {}
+
+    #renderAndUploadsPictures
+    #we then have a collection with for each link every picture it's linked with
     for graph in wikiGenealogyTree.graphs:
         code = str(hash(tuple(graph.urls)))
 
-        name = 'img/bufferForLocalGenealogyPictures'
         uploadName = "Family_Tree_" + code + ".png"
 
         graph.render(name)
@@ -90,9 +94,11 @@ def writeGraphs(resData):
         upload_contents = upload_file.read()
         upload_file.close()
 
-        urls = modifyURLToDiscussion(graph.urls)
-
         write_picture_on_wiki(upload_contents, uploadName)
 
+        urls = modifyURLToDiscussion(graph.urls)
         for url in urls:
-            write_picture_after_title(uploadName, url)
+            urlWithImages.setdefault(url, set()).add(uploadName)
+
+    for url, imageNames in urlWithImages.items():
+        write_picture_after_title(imageNames, url)
