@@ -9,14 +9,6 @@ from Scraping.WikiInference import *
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 def write_inferences(resData, allLinks):
-    members = set()
-    for page in resData.data:
-        temp = list(filter(lambda x: x is not None, page.weddings))
-        if temp:
-            for elem in temp:
-                members.add((elem, page.url))
-
-    print('toto')
     birth_facts = BirthInferenceChecker()
     multibirth_facts = MultiBirthInferenceChecker()
     multideath_facts = MultiDeathInferenceChecker()

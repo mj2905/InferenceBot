@@ -26,7 +26,7 @@ def setupScrapeBeginDate(*args):
 
     # No date parameter, continue
     else:
-        scrapeBeginDate = yesterday
+        # scrapeBeginDate = yesterday
         return True
 
 
@@ -163,7 +163,7 @@ PROMPT = 'InferenceBot > '
 TIME_BEGIN = "2000-01-01T00:00:00Z"
 TIME_FORMAT = "%Y-%m-%dT00:00:00Z"
 yesterday = date.today() - timedelta(1)
-scrapeBeginDate = yesterday
+scrapeBeginDate = date.today() - timedelta(100)
 currentTask = None
 killPill = threading.Event()
 command_list = [hello, hi, thanks, scrape, infer, autorun, stop, shutdown, die, help, clean]
