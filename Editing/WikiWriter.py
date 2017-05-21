@@ -102,16 +102,16 @@ def establish_connexion():
 
     return(edit_token, edit_cookie)
 
-
-#pictureName needs to have the extension
-def write_picture_after_title(picture, pictureName, page = writePage):
-
+def write_picture_on_wiki(picture, pictureName):
     (edit_token, edit_cookie) = establish_connexion()
 
     payload = {'action': 'upload', 'filename': pictureName, 'token': edit_token, 'ignorewarnings': 1}
     files = {'file': picture}
 
     r4 = requests.post(baseurl + 'api.php', data=payload, files=files, cookies=edit_cookie)
+
+#pictureName needs to have the extension
+def write_picture_after_title(pictureName, page = writePage):
 
     value = get_page_or_create(page, picture_title, picture_foot)
     p = value[0][:value[1]] + "\n [[Fichier:" + pictureName + "]] \n" + value[0][value[2]:]

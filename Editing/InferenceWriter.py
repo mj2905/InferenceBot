@@ -1,5 +1,6 @@
 from Editing.PrettyPrinter import pretty, modifyURLToDiscussion
-from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists, write_picture_after_title
+from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists, write_picture_after_title, \
+    write_picture_on_wiki
 from Scraping.WikiGraph import WikiGenealogyTree
 from Scraping.WikiInference import *
 
@@ -80,7 +81,9 @@ def writeGraphs(resData):
 
     for graph in wikiGenealogyTree.graphs:
         code = str(hash(tuple(graph.urls)))
-        name = 'img/' + code
+
+        name = 'img/bufferForLocalGenealogyPictures'
+        uploadName = "Family_Tree_" + code + ".png"
 
         graph.render(name)
         upload_file = open(name + '.png', "rb")
@@ -88,5 +91,8 @@ def writeGraphs(resData):
         upload_file.close()
 
         urls = modifyURLToDiscussion(graph.urls)
+
+        write_picture_on_wiki(upload_contents, uploadName)
+
         for url in urls:
-            write_picture_after_title(upload_contents, "Family_Tree_" + code + ".png", url)
+            write_picture_after_title(uploadName, url)
