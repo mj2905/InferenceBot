@@ -63,8 +63,11 @@ def delete_on_page_if_exists(page = writePage, output_title = output_title, outp
 
 def write_on_page_after_title(text, page = writePage):
     value = get_page_or_create(page)
-    newText = value[0][:value[1]] + "\n" + text + "\n" + value[0][value[2]:]
-    write_on_page(newText, page)
+    if len(value) >= 3:
+        newText = value[0][:value[1]] + "\n" + text + "\n" + value[0][value[2]:]
+        write_on_page(newText, page)
+    else:
+        print("Error while writing on " + page + " with value = " + str(value))
 
 
 def run():
