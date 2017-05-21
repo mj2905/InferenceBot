@@ -229,15 +229,15 @@ class DeathScraper(Scraper):
     @staticmethod
     def extract(text):
         entities = set()
-        result = re.finditer(BirthScraper.REGEX, text)
+        result = re.finditer(DeathScraper.REGEX, text)
         for g in result:
             p = Person(g.group('name'), g.group('lastName'))
             d = Date.extractDate(g.group('date'))
             l = Location(g.group('location'))
 
-            b = Death(d, l, p)
-            entities.add(b)
-            logging.info("Crafted object: %s", b)
+            death = Death(d, l, p)
+            entities.add(death)
+            logging.info("Crafted object: %s", death)
 
         return entities
 
@@ -267,18 +267,23 @@ class EncounterScraper(Scraper):
     A Scraper class specialized in scraping encounter between two individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.ENCOUNTER
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Rencontre de (?P<name1>\w+) (?P<lastName1>\w+) avec (?P<name2>\w+) (?P<lastName2>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.ENCOUNTER)
+    def extract(text):
+        entities = set()
+        result = re.finditer(EncounterScraper.REGEX, text)
+        for g in result:
+            p1 = Person(g.group('name1'), g.group('lastName1'))
+            p2 = Person(g.group('name2'), g.group('lastName2'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.binaryEventExtractor(s, WikiStrings.ENCOUNTER_TODISCARD, WikiStrings.ENCOUNTER)
-        return None if tmp is None else Encounter(*tmp)
+            e = Encounter(d, l, p1, p2)
+            entities.add(e)
+            logging.info("Crafted object: %s", e)
+
+        return entities
 
 
 class ElectionScraper(Scraper):
@@ -392,7 +397,7 @@ def run(urlList):
 
         births = BirthScraper.extract(soupText)
         deaths = DeathScraper.extract(soupText)
-        encounters = scrap_generic(soup, EncounterScraper)
+        encounters = EncounterScraper.extract(soupText)
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
         mariages = scrap_generic(soup, MariageScraper)
