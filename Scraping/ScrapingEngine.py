@@ -2,6 +2,7 @@ import logging
 import re
 import time
 import urllib.request as urllib
+import urllib.parse as urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -10,9 +11,10 @@ import Scraping.WikiScraper
 from DataStructures.Datastructs import WikiData
 from Scraping.WikiStrings import validWikiUrl
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.ERROR)
 
 discussionTag = "Discussion:"
+fichierTag = "Fichier:"
 
 class ScrapingEngine(object):
     def __init__(self):
@@ -44,8 +46,9 @@ class ScrapingEngine(object):
             soup = BeautifulSoup(result.content, 'lxml')
 
             for primitive in soup.usercontribs.findAll('item'):
-                if discussionTag not in primitive['title']:
-                    self.linksDB.add(''.join([self.urlTitlePrefix, re.sub('\s+', '_', str(primitive['title']))]))
+                if discussionTag not in primitive['title'] and fichierTag not in primitive['title']:
+                    page = urlparse.quote_plus(str(re.sub('\s+', '_', str(primitive['title']))))
+                    self.linksDB.add(''.join([self.urlTitlePrefix, page]))
 
         for link in self.linksDB:
             logging.info("%s", link)

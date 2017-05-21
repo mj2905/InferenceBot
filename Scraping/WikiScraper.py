@@ -2,13 +2,14 @@ import logging
 import threading
 import urllib.request as urllib
 
+import sys
 from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
 from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.ERROR)
 
 
 def scrap_generic(data, scraper):
