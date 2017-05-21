@@ -224,18 +224,22 @@ class DeathScraper(Scraper):
     A Scraper class specialized in scraping deaths of individuals
     """
 
-    @staticmethod
-    def keyword():
-        return WikiStrings.DEATH
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). (Décès|Mort) de (?P<name>\w+) (?P<lastName>\w+).'
 
     @staticmethod
-    def find(data):
-        return data.findAll(string=WikiStrings.DEATH)
+    def extract(text):
+        entities = set()
+        result = re.finditer(BirthScraper.REGEX, text)
+        for g in result:
+            p = Person(g.group('name'), g.group('lastName'))
+            d = Date.extractDate(g.group('date'))
+            l = Location(g.group('location'))
 
-    @staticmethod
-    def extract(s):
-        tmp = Scraper.unaryEventExtractor(s, WikiStrings.DEATH_TODISCARD, WikiStrings.DEATH)
-        return None if tmp is None else Death(*tmp)
+            b = Death(d, l, p)
+            entities.add(b)
+            logging.info("Crafted object: %s", b)
+
+        return entities
 
 
 class PositionScraper(Scraper):
@@ -387,7 +391,7 @@ def run(urlList):
         soupText = str(soup.text)
 
         births = BirthScraper.extract(soupText)
-        deaths = scrap_generic(soup, DeathScraper)
+        deaths = DeathScraper.extract(soupText)
         encounters = scrap_generic(soup, EncounterScraper)
         positions = scrap_generic(soup, PositionScraper)
         elections = scrap_generic(soup, ElectionScraper)
