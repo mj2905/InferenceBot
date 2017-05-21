@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from DataStructures.Datastructs import *
 from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
-from Scraping.WikiStrings import translationTable
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -132,68 +131,6 @@ class Scraper(metaclass=ABCMeta):
         l = Location(location)
 
         return d, l, p
-
-    @staticmethod
-    def binaryEventExtractor(s, stringsToDiscard, eventName):
-        """
-        The usual binary event format is the following:
-
-        Date / Location. Event X [for/from/of] Person Y [with/and] Person Z.
-
-        The line is first split at '/' to retrieve the date, then at the first dot to retrieve the location and
-        finally splits the remaining string at each space. The resulting list is filtered according to the list of
-        words to discard as given in the WikiStrings file and the event object is created with the remaining data.
-        If the remaining data does not math the format expected it is discarded and the entry is logged.
-
-        :param s: The string entry from which to extract the event.
-        :param stringsToDiscard: The constant list of string to discard from the event entry.
-        :param eventName: The name of the event. (For logging purposes)
-        :return: A tuple (Date, Location, Person1, Person2) which can be used to create the event
-        """
-        BAD_FORMAT = ''.join(
-            ["The scraper discarded a candidate ", eventName,
-             " because it did not have the correct format. ",
-             "The discarded entry is %s"])
-
-        if (s.endswith(".")):
-            s = s[:-1]
-
-        dateRes = s.split("/")
-
-        if len(dateRes) != 2:
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        dateRes[0] = dateRes[0].translate(dateTranslationTable).strip()
-
-        if dateRes[0] == '':
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        date, locAndPeople = dateRes[0], dateRes[1]
-
-        locRes = locAndPeople.split(".", 1)  # Specify at most 1 split to retrieve location
-
-        if (len(locRes) < 2):
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        location, people = locRes[0], locRes[1]
-
-        # Extract only people's names. The translation removes unwanted characters from the string
-        people = people.translate(translationTable).strip().split(" ")
-        people = [x for x in people if x not in stringsToDiscard]
-
-        if (len(people) < 4):
-            logging.warning(BAD_FORMAT, s)
-            return None
-
-        p1 = Person(people[0], people[1])
-        p2 = Person(people[2], people[3])
-        d = Date.extractDate(date)
-        l = Location(location)
-
-        return d, l, p1, p2
 
 
 class BirthScraper(Scraper):
