@@ -183,6 +183,7 @@ class Event(Predicateable):
 
         :param date: The date at which the event occurred
         """
+        
         self.date = date
 
     def __str__(self):
