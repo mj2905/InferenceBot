@@ -152,6 +152,7 @@ def help(*args):
     print("Commands available :")
     print("scrape")
     print("infer")
+    print("clean")
     print("autorun")
     print("stop")
     print("shutdown")
@@ -165,7 +166,7 @@ yesterday = date.today() - timedelta(1)
 scrapeBeginDate = yesterday
 currentTask = None
 killPill = threading.Event()
-command_list = [hello, hi, thanks, scrape, infer, autorun, stop, shutdown, die, help]
+command_list = [hello, hi, thanks, scrape, infer, autorun, stop, shutdown, die, help, clean]
 commands = {f.__name__: f for f in command_list}
 
 se = ScrapingEngine()

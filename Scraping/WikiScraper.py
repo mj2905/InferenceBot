@@ -2,12 +2,12 @@ import logging
 import threading
 import urllib.request as urllib
 
-import sys
 from bs4 import BeautifulSoup
 
 from DataStructures.Datastructs import *
 from DataStructures.Datastructs import WikiData
 from Scraping import WikiStrings
+from Scraping.WikiStrings import *
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -139,7 +139,7 @@ class BirthScraper(Scraper):
     A Scraper class specialized in scraping births of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Naissance de (?P<name>\w+) (?P<lastName>\w+).'
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>[-\w]+). Naissance de (?P<name>[-\w]+) (?P<lastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -148,6 +148,10 @@ class BirthScraper(Scraper):
         for g in result:
             p = Person(g.group('name'), g.group('lastName'))
             d = Date.extractDate(g.group('date'))
+
+            if d is None:
+                continue
+
             l = Location(g.group('location'))
 
             b = Birth(d, l, p)
@@ -162,7 +166,7 @@ class DeathScraper(Scraper):
     A Scraper class specialized in scraping deaths of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). (Décès|Mort) de (?P<name>\w+) (?P<lastName>\w+).'
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>[-\w]+). (Décès|Mort) de (?P<name>[-\w]+) (?P<lastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -171,6 +175,10 @@ class DeathScraper(Scraper):
         for g in result:
             p = Person(g.group('name'), g.group('lastName'))
             d = Date.extractDate(g.group('date'))
+
+            if d is None:
+                continue
+
             l = Location(g.group('location'))
 
             death = Death(d, l, p)
@@ -205,7 +213,7 @@ class EncounterScraper(Scraper):
     A Scraper class specialized in scraping encounter between two individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Rencontre de (?P<name1>\w+) (?P<lastName1>\w+) avec (?P<name2>\w+) (?P<lastName2>\w+).'
+    REGEX = DATE_AND_LOC_REGEX + '\s+Rencontre\s+(de|entre)\s+(?P<name1>[-\w]+)\s+(?P<lastName1>[-\w]+)\s+(et|avec)\s+(?P<name2>[-\w]+)\s+(?P<lastName2>[-\w]+)'
 
     @staticmethod
     def extract(text):
@@ -215,6 +223,10 @@ class EncounterScraper(Scraper):
             p1 = Person(g.group('name1'), g.group('lastName1'))
             p2 = Person(g.group('name2'), g.group('lastName2'))
             d = Date.extractDate(g.group('date'))
+
+            if d is None:
+                continue
+
             l = Location(g.group('location'))
 
             e = Encounter(d, l, p1, p2)
@@ -229,7 +241,7 @@ class ElectionScraper(Scraper):
     A Scapper class psecialized in scrapping elections of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Election de (?P<name>\w+) (?P<lastName>\w+).'
+    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>[-\w]+). Election de (?P<name>[-\w]+) (?P<lastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -238,6 +250,10 @@ class ElectionScraper(Scraper):
         for g in result:
             p = Person(g.group('name'), g.group('lastName'))
             d = Date.extractDate(g.group('date'))
+
+            if d is None:
+                continue
+
             l = Location(g.group('location'))
 
             e = Election(d, l, p)
@@ -252,7 +268,7 @@ class MariageScraper(Scraper):
     A Scapper class specialized in scrapping mariage of individuals
     """
 
-    REGEX = r'(?P<date>[0-9]{4}.[0-9]{2}.[0-9]{2}) / (?P<location>\w+). Mariage de (?P<name1>\w+) (?P<lastName1>\w+) avec (?P<name2>\w+) (?P<lastName2>\w+).'
+    REGEX = DATE_AND_LOC_REGEX + '\s+Mariage\s+(de|d\')\s*(?P<name1>[-\w]+)\s+(?P<lastName1>[-\w]+)\s+(avec|et|et d\')\s*(?P<name2>[-\w]+)\s+(?P<lastName2>[-\w]+)'
 
     @staticmethod
     def extract(text):
@@ -262,6 +278,10 @@ class MariageScraper(Scraper):
             p1 = Person(g.group('name1'), g.group('lastName1'))
             p2 = Person(g.group('name2'), g.group('lastName2'))
             d = Date.extractDate(g.group('date'))
+
+            if d is None:
+                continue
+
             l = Location(g.group('location'))
 
             w = Wedding(d, l, p1, p2)
@@ -275,7 +295,7 @@ class ParentScraper(Scraper):
     """
     A Scapper class specialized in scrapping parent-child relationships
     """
-    REGEX = r'((?P<male>Le père de)|(?P<female>La mère de)) (?P<childName>\w+) (?P<childLastName>\w+) est (?P<parentName>\w+) (?P<parentLastName>\w+).'
+    REGEX = r'((?P<male>Le père de)|(?P<female>La mère de)) (?P<childName>[-\w]+) (?P<childLastName>[-\w]+) est (?P<parentName>[-\w]+) (?P<parentLastName>[-\w]+).'
 
     @staticmethod
     def extract(text):
@@ -358,5 +378,5 @@ def run(urlList):
 
 
 if __name__ == '__main__':
-
-    run(["http://wikipast.epfl.ch/wikipast/index.php/Secundinus_Aurelianus"])
+    run(["http://wikipast.epfl.ch/wikipast/index.php/Mariage"])
+    run(["http://wikipast.epfl.ch/wikipast/index.php/Rencontre"])

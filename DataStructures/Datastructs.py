@@ -2,6 +2,7 @@ import re
 from abc import ABCMeta, abstractmethod
 
 from InferenceEngine.Predicate import Atom, Predicate
+from InputValidation import isValidInteger
 from Scraping.WikiStrings import dateTranslationTable
 
 
@@ -141,6 +142,11 @@ class Date(Atomiseable):
                 tmp = s
                 s = ''
             vals.append(tmp)
+
+        for j in vals:
+            if not isValidInteger(j):
+                return None
+
         return Date(*tuple(vals))
 
     def toAtom(self):

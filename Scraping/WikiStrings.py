@@ -27,6 +27,7 @@ POSITION_TODISCARD = '\w+ de '
 CLOSE = "proche"
 FAR = "loin"
 
+DATE_AND_LOC_REGEX = '(?P<date>[0-9]{4}.*[0-9]{0,2}.*[0-9]{0,2})\s*/\s*(?P<location>[-\w]*).*'
 
 ENCOUNTER = "Rencontre"
 ENCOUNTER_TODISCARD = ["Rencontre", "de", "avec", "entre", "et"]
