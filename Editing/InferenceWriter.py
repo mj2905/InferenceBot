@@ -90,7 +90,7 @@ def writeGraphs(resData, allLinks):
     #renderAndUploadsPictures
     #we then have a collection with for each link every picture it's linked with
     for graph in wikiGenealogyTree.graphs:
-        code = str(hash(tuple(graph.urls)))
+        code = str(hash(frozenset(graph.urls)))
 
         uploadName = "Family_Tree_" + code + ".png"
 
