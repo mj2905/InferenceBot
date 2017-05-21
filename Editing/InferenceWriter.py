@@ -1,9 +1,12 @@
+import logging
+
 from Editing.PrettyPrinter import pretty, modifyURLToDiscussion
 from Editing.WikiWriter import write_on_page_after_title, delete_on_page_if_exists, write_picture_after_title, \
-    write_picture_on_wiki
+    write_picture_on_wiki, picture_title, picture_foot
 from Scraping.WikiGraph import WikiGenealogyTree
 from Scraping.WikiInference import *
 
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 def write_inferences(resData, allLinks):
 
@@ -17,7 +20,9 @@ def write_inferences(resData, allLinks):
     mariage_aft_death_facts = MariageAftDeathInferenceChecker()
     divorce_facts = DivorceInferenceChecker()
 
+    logging.info("Building images")
     writeGraphs(resData)
+    logging.info("Building facts")
 
     list_birth_facts = birth_facts.checkIfErrors(resData)
     list_multibirth_facts = multibirth_facts.checkIfErrors(resData)
@@ -74,13 +79,13 @@ def writeOnPages(factsWithPages):
         write_on_page_after_title(s, k)
 
 
-def writeGraphs(resData):
+def writeGraphs(resData, allLinks):
     wikiGenealogyTree = WikiGenealogyTree()
     wikiGenealogyTree.addData(resData)
     wikiGenealogyTree.generateGraph()
 
     name = 'img/bufferForLocalGenealogyPictures'
-    urlWithImages = {}
+    urlWithImages = {link: set() for link in allLinks}
 
     #renderAndUploadsPictures
     #we then have a collection with for each link every picture it's linked with
@@ -101,4 +106,7 @@ def writeGraphs(resData):
             urlWithImages.setdefault(url, set()).add(uploadName)
 
     for url, imageNames in urlWithImages.items():
-        write_picture_after_title(imageNames, url)
+        if len(imageNames) == 0:
+            delete_on_page_if_exists(url, picture_title, picture_foot)
+        else:
+            write_picture_after_title(imageNames, url)
