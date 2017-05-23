@@ -101,9 +101,9 @@ def loopTask(stopEvent, *args):
 
         infer(*args)
 
-        print("Going for a coffee break, see you in 10 minutes. (^_^)o自")
+        print("Going for a coffee break, see you in 1 hour. (^_^)o自")
 
-        while not stopEvent.wait(1) and waitingTime < 600:
+        while not stopEvent.wait(1) and waitingTime < 3600:
             waitingTime = waitingTime + 1
 
         clean()
